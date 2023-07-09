@@ -1,34 +1,53 @@
+use wasm_bindgen::prelude::*;
+use std::ops::{Deref, DerefMut};
+
 use crate::vector2::Vector2;
 
-struct Particle {
-    x: f64,
-    y: f64,
+#[derive(Copy, Clone, Debug)]
+pub struct Particle {
+    pub pos: Vector2,
     // radius: f64
 }
-const PARTICLE_SIZE: usize = std::mem::size_of::<Particle>() / 8;
 
-pub struct ParticleList<'a> {
-    coords: &'a mut [f64],
-    size: usize
+static mut LIST: Vec<Particle> = Vec::new();
+
+#[wasm_bindgen]
+pub fn add_particle(x: f64, y: f64) {
+    unsafe { LIST.push(Particle { pos: Vector2::new(x, y) }) }
 }
 
-impl<'a> ParticleList<'a> {
-    pub fn get_pos(&self, index: usize) -> Vector2 {
-        Vector2::new(self.coords[index * PARTICLE_SIZE], self.coords[index * PARTICLE_SIZE + 1])
-    }
+#[wasm_bindgen]
+pub fn remove_particle(index: usize) {
+    unsafe { LIST.remove(index); }
+}
 
-    pub fn set_pos(&mut self, index: usize, pos: Vector2) {
-        (self.coords[index * PARTICLE_SIZE], self.coords[index * PARTICLE_SIZE + 1]) = pos.into();
-    }
+#[wasm_bindgen]
+pub fn update_x(delta: f64) {
+    unsafe { LIST[0].pos.x += delta; }
+}
 
-    pub fn len(&self) -> usize {
-        self.size
+#[wasm_bindgen]
+pub fn update_y(delta: f64) {
+    unsafe { LIST[0].pos.y += delta; }
+}
+
+#[wasm_bindgen]
+pub fn get_particle(index: usize) -> Option<Vec<f64>> {
+    unsafe { LIST.get(index).map(|p| vec![p.pos.x, p.pos.y]) }
+}
+
+pub struct ParticleList;
+
+impl Deref for ParticleList {
+    type Target = [Particle];
+
+    fn deref(&self) -> &[Particle] {
+        unsafe { LIST.deref() }
     }
 }
 
-impl<'a> From<&'a mut [f64]> for ParticleList<'a> {
-    fn from(coords: &'a mut [f64]) -> Self {
-        let size = coords.len() / PARTICLE_SIZE;
-        ParticleList { coords, size }
+impl DerefMut for ParticleList {
+    fn deref_mut(&mut self) -> &mut [Particle] {
+        unsafe { LIST.deref_mut() }
     }
 }
