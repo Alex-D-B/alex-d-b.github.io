@@ -1,6 +1,6 @@
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign};
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vector2 {
     pub x: f64,
     pub y: f64
@@ -9,6 +9,10 @@ pub struct Vector2 {
 impl Vector2 {
     pub fn new(x: f64, y: f64) -> Vector2 {
         Vector2 { x, y }
+    }
+
+    pub fn zero() -> Vector2 {
+        Vector2 { x: 0.0, y: 0.0 }
     }
 
     pub fn dot(self, other: &Vector2) -> f64 {
@@ -37,11 +41,25 @@ impl Add for Vector2 {
     }
 }
 
+impl AddAssign for Vector2 {
+    fn add_assign(&mut self, rhs: Vector2) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+    }
+}
+
 impl Sub for Vector2 {
     type Output = Vector2;
 
     fn sub(self, rhs: Vector2) -> Self::Output {
         Vector2 { x: self.x - rhs.x, y: self.y - rhs.y }
+    }
+}
+
+impl SubAssign for Vector2 {
+    fn sub_assign(&mut self, rhs: Vector2) {
+        self.x -= rhs.x;
+        self.y -= rhs.y;
     }
 }
 
@@ -53,11 +71,33 @@ impl Mul<Vector2> for f64 {
     }
 }
 
+impl Mul<f64> for Vector2 {
+    type Output = Vector2;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Vector2 { x: self.x * rhs, y: self.y * rhs }
+    }
+}
+
+impl MulAssign<f64> for Vector2 {
+    fn mul_assign(&mut self, rhs: f64) {
+        self.x *= rhs;
+        self.y *= rhs;
+    }
+}
+
 impl Div<f64> for Vector2 {
     type Output = Vector2;
 
     fn div(self, rhs: f64) -> Self::Output {
         Vector2 { x: self.x / rhs, y: self.y / rhs }
+    }
+}
+
+impl DivAssign<f64> for Vector2 {
+    fn div_assign(&mut self, rhs: f64) {
+        self.x /= rhs;
+        self.y /= rhs;
     }
 }
 

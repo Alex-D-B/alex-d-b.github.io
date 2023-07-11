@@ -6,14 +6,21 @@ use crate::vector2::Vector2;
 #[derive(Copy, Clone, Debug)]
 pub struct Particle {
     pub pos: Vector2,
-    // radius: f64
+    pub vel: Vector2,
+    pub acc: Vector2,
+    pub radius: f64
 }
 
 static mut LIST: Vec<Particle> = Vec::new();
 
 #[wasm_bindgen]
-pub fn add_particle(x: f64, y: f64) {
-    unsafe { LIST.push(Particle { pos: Vector2::new(x, y) }) }
+pub fn add_particle(x: f64, y: f64, radius: f64) {
+    unsafe { LIST.push(Particle {
+        pos: Vector2::new(x, y),
+        vel: Vector2::new(0.0, 0.0),
+        acc: Vector2::new(0.0, 0.0),
+        radius
+    }) }
 }
 
 #[wasm_bindgen]
@@ -22,13 +29,13 @@ pub fn remove_particle(index: usize) {
 }
 
 #[wasm_bindgen]
-pub fn update_x(delta: f64) {
-    unsafe { LIST[0].pos.x += delta; }
+pub fn apply_x(force: f64) {
+    unsafe { LIST[0].acc.x += force; }
 }
 
 #[wasm_bindgen]
-pub fn update_y(delta: f64) {
-    unsafe { LIST[0].pos.y += delta; }
+pub fn apply_y(force: f64) {
+    unsafe { LIST[0].acc.y += force; }
 }
 
 #[wasm_bindgen]

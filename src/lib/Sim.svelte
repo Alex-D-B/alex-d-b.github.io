@@ -34,7 +34,7 @@
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.x = particles[i - 1];
             sphere.position.y = particles[i];
-            Physics.add_particle(particles[i - 1], particles[i]);
+            Physics.add_particle(particles[i - 1], particles[i], 1);
             spheres.push(sphere);
             scene.add(sphere);
         }
@@ -42,22 +42,22 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            const speed = 0.2;
+            const speed = 100;
 
             if (right) {
-                Physics.update_x(speed);
+                Physics.apply_x(speed);
             }
             if (left) {
-                Physics.update_x(-speed);
+                Physics.apply_x(-speed);
             }
             if (up) {
-                Physics.update_y(speed);
+                Physics.apply_y(speed);
             }
             if (down) {
-                Physics.update_y(-speed);
+                Physics.apply_y(-speed);
             }
 
-            let cols = new Set(Physics.resolve_collisions());
+            Physics.update(1.0 / 60);
 
             torus.rotation.x += 0.01;
             torus.rotation.y += 0.05;
@@ -66,11 +66,11 @@
             spheres.forEach((sphere, i) => {
                 let pos = Physics.get_particle(i);
                 [sphere.position.x, sphere.position.y] = pos;
-                if (cols.has(i)) {
-                    sphere.material.color.setHex(0x00ff00);
-                } else {
-                    sphere.material.color.setHex(0xff6347);
-                }
+                // if (cols.has(i)) {
+                //     sphere.material.color.setHex(0x00ff00);
+                // } else {
+                //     sphere.material.color.setHex(0xff6347);
+                // }
             });
 
             renderer.render(scene, camera);

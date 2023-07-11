@@ -1,10 +1,11 @@
 use wasm_bindgen::prelude::*;
-use std::collections::HashSet;
 use particle::ParticleList;
 use vector2::Vector2;
 
 mod particle;
 mod vector2;
+
+const DRAG: f64 = -1.0;
 
 #[wasm_bindgen]
 extern {
@@ -12,23 +13,48 @@ extern {
 }
 
 #[wasm_bindgen]
-pub fn resolve_collisions() -> Vec<i32> {
-    let mut out_list: HashSet<i32> = HashSet::new();
+pub fn update(dt: f64) {
+    let mut list = ParticleList;
+
+    compute_drag();
+    
+    for particle in list.iter_mut() {
+        particle.vel += particle.acc * dt;
+        particle.pos += particle.vel * dt;
+        particle.acc = Vector2::zero();
+    }
+    
+    resolve_collisions();
+}
+
+fn resolve_collisions() {
     let mut list = ParticleList;
 
     for i in 0..list.len() - 1 {
         for j in i + 1..list.len() {
 
-            // let pos_i = list.get_pos(i);
-            // let pos_j = list.get_pos(j);
+            let dist = Vector2::dist(list[i].pos, list[j].pos);
+            let min_dist = list[i].radius + list[j].radius;
+            if dist < min_dist {
+                
+                let direction = (list[j].pos - list[i].pos).normalize();
+                let overlap = min_dist - dist;
 
-            if Vector2::dist(list[i].pos, list[j].pos) < 2.0 {
-                out_list.insert(i as i32);
-                out_list.insert(j as i32);
+                list[i].pos -= overlap * direction / 2.0;
+                list[j].pos += overlap * direction / 2.0;
+
             }
 
         }
     }
 
-    out_list.into_iter().collect()
+}
+
+fn compute_drag() {
+    let mut list = ParticleList;
+
+    for particle in list.iter_mut() {
+        let drag = particle.vel * DRAG;
+        particle.acc += drag;
+    }
 }
