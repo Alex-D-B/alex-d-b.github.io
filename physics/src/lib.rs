@@ -6,6 +6,7 @@ mod particle;
 mod vector2;
 
 const DRAG: f64 = -1.0;
+const RESTITUTION: f64 = 0.5;
 
 #[wasm_bindgen]
 extern {
@@ -42,6 +43,15 @@ fn resolve_collisions() {
 
                 list[i].pos -= overlap * direction / 2.0;
                 list[j].pos += overlap * direction / 2.0;
+
+                let total_momentum = list[i].mass * list[i].vel + list[j].mass * list[j].vel;
+                let total_mass = list[i].mass + list[j].mass;
+
+                let a_vel = (total_momentum + list[j].mass * RESTITUTION * (list[j].vel - list[i].vel)) / total_mass;
+                let b_vel = (total_momentum + list[i].mass * RESTITUTION * (list[i].vel - list[j].vel)) / total_mass;
+
+                list[i].vel = a_vel;
+                list[j].vel = b_vel;
 
             }
 

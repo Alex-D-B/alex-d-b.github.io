@@ -3,22 +3,26 @@ use std::ops::{Deref, DerefMut};
 
 use crate::vector2::Vector2;
 
+const MAX_SPEED: f64 = 20.0;
+
 #[derive(Copy, Clone, Debug)]
 pub struct Particle {
     pub pos: Vector2,
     pub vel: Vector2,
     pub acc: Vector2,
+    pub mass:   f64,
     pub radius: f64
 }
 
 static mut LIST: Vec<Particle> = Vec::new();
 
 #[wasm_bindgen]
-pub fn add_particle(x: f64, y: f64, radius: f64) {
+pub fn add_particle(x: f64, y: f64, radius: f64, mass: f64) {
     unsafe { LIST.push(Particle {
         pos: Vector2::new(x, y),
         vel: Vector2::new(0.0, 0.0),
         acc: Vector2::new(0.0, 0.0),
+        mass,
         radius
     }) }
 }
@@ -30,12 +34,12 @@ pub fn remove_particle(index: usize) {
 
 #[wasm_bindgen]
 pub fn apply_x(force: f64) {
-    unsafe { LIST[0].acc.x += force; }
+    unsafe { if LIST[0].vel.magnitude() < MAX_SPEED { LIST[0].acc.x += force; } }
 }
 
 #[wasm_bindgen]
 pub fn apply_y(force: f64) {
-    unsafe { LIST[0].acc.y += force; }
+    unsafe { if LIST[0].vel.magnitude() < MAX_SPEED { LIST[0].acc.y += force; } }
 }
 
 #[wasm_bindgen]

@@ -34,7 +34,7 @@
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.x = particles[i - 1];
             sphere.position.y = particles[i];
-            Physics.add_particle(particles[i - 1], particles[i], 1);
+            Physics.add_particle(particles[i - 1], particles[i], 1, 1);
             spheres.push(sphere);
             scene.add(sphere);
         }
