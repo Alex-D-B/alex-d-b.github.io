@@ -31,6 +31,7 @@ impl Vector2 {
     pub fn dist(p1: Vector2, p2: Vector2) -> f64 {
         ((p1.x - p2.x).powi(2) + (p1.y - p2.y).powi(2)).sqrt()
     }
+
 }
 
 impl Add for Vector2 {
@@ -106,3 +107,10 @@ impl From<Vector2> for (f64, f64) {
         (v.x, v.y)
     }
 }
+
+impl From<(f64, f64)> for Vector2 {
+    fn from(v: (f64, f64)) -> Self {
+        Vector2 {x: v.0, y: v.1}
+    }
+}
+

@@ -5,7 +5,7 @@ use vector2::Vector2;
 mod particle;
 mod vector2;
 
-const DRAG: f64 = -1.0;
+const DRAG: f64 = -0.0;
 const RESTITUTION: f64 = 0.5;
 const GRAV: f64 = 0.05;
 

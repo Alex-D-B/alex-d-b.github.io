@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 use std::ops::{Deref, DerefMut};
 
 use crate::vector2::Vector2;
+use crate::GRAV;
 
 const MAX_SPEED: f64 = 20.0;
 
@@ -17,7 +18,7 @@ pub struct Particle {
 static mut LIST: Vec<Particle> = Vec::new();
 
 #[wasm_bindgen]
-pub fn add_particle(x: f64, y: f64, radius: f64, mass: f64) {
+pub fn add_particle(x: f64, y: f64, mass: f64, radius: f64) {
     unsafe { LIST.push(Particle {
         pos: Vector2::new(x, y),
         vel: Vector2::new(0.0, 0.0),
@@ -25,6 +26,29 @@ pub fn add_particle(x: f64, y: f64, radius: f64, mass: f64) {
         mass,
         radius
     }) }
+}
+
+#[wasm_bindgen]
+pub fn add_orbiting_particle(index: usize, x: f64, y: f64, mass: f64, radius: f64, orbit_clockwise: bool) {
+
+    if let Some(base) = ParticleList.get(index) {
+        let local_pos = Vector2::new(x, y) - base.pos;
+        let mut direction = local_pos.normalize();
+        (direction.x, direction.y) = (-direction.y, direction.x);
+        if orbit_clockwise {
+            direction = -1.0 * direction;
+        }
+        let velocity_magnitude = (GRAV * base.mass / local_pos.magnitude()).sqrt();
+        
+        unsafe { LIST.push(Particle {
+            pos: Vector2::new(x, y),
+            vel: velocity_magnitude * direction,
+            acc: Vector2::new(0.0, 0.0),
+            mass,
+            radius
+        }) }
+    }
+
 }
 
 #[wasm_bindgen]

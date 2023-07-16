@@ -34,7 +34,12 @@
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.x = particles[i - 1];
             sphere.position.y = particles[i];
-            Physics.add_particle(particles[i - 1], particles[i], 1, i == particles.length - 1 ? 500 : 1);
+            const index = Math.floor(i / 2);
+            if (index % 2 === 0) {
+                Physics.add_particle(particles[i - 1], particles[i], /*i == particles.length - 1 ? 500 :*/ 40, 1);
+            } else {
+                Physics.add_orbiting_particle(index - 1, particles[i - 1], particles[i], /*i == particles.length - 1 ? 500 :*/ 40, 1, false);
+            }
             spheres.push(sphere);
             scene.add(sphere);
         }
@@ -74,7 +79,6 @@
             });
 
             renderer.render(scene, camera);
-            console.log('done');
         }
 
         animate();
