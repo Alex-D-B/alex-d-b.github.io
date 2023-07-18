@@ -22,7 +22,7 @@ pub fn add_particle(x: f64, y: f64, mass: f64, radius: f64) {
     unsafe { LIST.push(Particle {
         pos: Vector2::new(x, y),
         vel: Vector2::new(0.0, 0.0),
-        acc: Vector2::new(0.0, 0.0),
+        acc: Vector2::new(0.0, -10.0),
         mass,
         radius
     }) }
@@ -42,7 +42,7 @@ pub fn add_orbiting_particle(index: usize, x: f64, y: f64, mass: f64, radius: f6
         
         unsafe { LIST.push(Particle {
             pos: Vector2::new(x, y),
-            vel: velocity_magnitude * direction,
+            vel: velocity_magnitude * direction + base.vel,
             acc: Vector2::new(0.0, 0.0),
             mass,
             radius

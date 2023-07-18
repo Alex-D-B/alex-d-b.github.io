@@ -1,13 +1,11 @@
 use wasm_bindgen::prelude::*;
 use particle::ParticleList;
 use vector2::Vector2;
+use constants::*;
 
 mod particle;
 mod vector2;
-
-const DRAG: f64 = -0.0;
-const RESTITUTION: f64 = 0.5;
-const GRAV: f64 = 0.05;
+mod constants;
 
 #[wasm_bindgen]
 extern {

@@ -22,27 +22,53 @@
 
         camera.position.setZ(30);
 
+        const spheres = [];
+        function makeParticle(x: number, y: number, mass: number, radius: number) {
+            const geometry = new THREE.SphereGeometry(radius);
+            const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.position.x = x;
+            sphere.position.y = y;
+            Physics.add_particle(x, y, mass, radius);
+            spheres.push(sphere);
+            scene.add(sphere);
+        }
+
+        function makeOrbitingParticle(index: number, x: number, y: number, mass: number, radius: number, orbitClockwise: boolean) {
+            const geometry = new THREE.SphereGeometry(radius);
+            const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.position.x = x;
+            sphere.position.y = y;
+            Physics.add_orbiting_particle(index, x, y, mass, radius, orbitClockwise);
+            spheres.push(sphere);
+            scene.add(sphere);
+        }
+
+        makeParticle(0, 0, 100000, 5); // sun
+        makeOrbitingParticle(0, 20, 0, 10, 2, true); // project
+        // makeOrbitingParticle(1, 20, 5, 0.05, 1, true); // project moon
+
         const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
 
         const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
         const torus = new THREE.Mesh(geometry, material);
         // scene.add(torus);
-        const spheres = [];
-        for (let i = 1; i < particles.length; i += 2) {
-            const geometry = new THREE.SphereGeometry(1);
-            const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
-            const sphere = new THREE.Mesh(geometry, material);
-            sphere.position.x = particles[i - 1];
-            sphere.position.y = particles[i];
-            const index = Math.floor(i / 2);
-            if (index % 2 === 0) {
-                Physics.add_particle(particles[i - 1], particles[i], /*i == particles.length - 1 ? 500 :*/ 40, 1);
-            } else {
-                Physics.add_orbiting_particle(index - 1, particles[i - 1], particles[i], /*i == particles.length - 1 ? 500 :*/ 40, 1, false);
-            }
-            spheres.push(sphere);
-            scene.add(sphere);
-        }
+        // for (let i = 1; i < particles.length; i += 2) {
+        //     const geometry = new THREE.SphereGeometry(1);
+        //     const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
+        //     const sphere = new THREE.Mesh(geometry, material);
+        //     sphere.position.x = particles[i - 1];
+        //     sphere.position.y = particles[i];
+        //     const index = Math.floor(i / 2);
+        //     if (index % 2 === 0) {
+        //         Physics.add_particle(particles[i - 1], particles[i], /*i == particles.length - 1 ? 500 :*/ 40, 1);
+        //     } else {
+        //         Physics.add_orbiting_particle(index - 1, particles[i - 1], particles[i], /*i == particles.length - 1 ? 500 :*/ 40, 1, false);
+        //     }
+        //     spheres.push(sphere);
+        //     scene.add(sphere);
+        // }
 
         function animate() {
             requestAnimationFrame(animate);
