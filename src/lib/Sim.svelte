@@ -45,9 +45,25 @@
             scene.add(sphere);
         }
 
-        makeParticle(0, 0, 100000, 5); // sun
-        makeOrbitingParticle(0, 20, 0, 10, 2, true); // project
-        // makeOrbitingParticle(1, 20, 5, 0.05, 1, true); // project moon
+        function makeOrbitingPair() {
+            const geometry1 = new THREE.SphereGeometry(5);
+            const geometry2 = new THREE.SphereGeometry(2);
+            const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
+            const sphere1 = new THREE.Mesh(geometry1, material);
+            const sphere2 = new THREE.Mesh(geometry2, material);
+            // sphere1.position.x = x;
+            // sphere2.position.y = y;
+            Physics.add_orbiting_pair(0, 0, 100, 100, 5, 2, true);
+            spheres.push(sphere1);
+            scene.add(sphere1);
+            spheres.push(sphere2);
+            scene.add(sphere2);
+        }
+
+        makeParticle(0, 0, 10000, 5); // sun
+        makeOrbitingParticle(0, 20, 0, 100, 2, true); // project
+        makeOrbitingParticle(1, 20, 5, 0.05, 1, true); // project moon
+        // makeOrbitingPair();
 
         const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
 

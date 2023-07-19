@@ -14,12 +14,10 @@ extern {
 
 #[wasm_bindgen]
 pub fn update(dt: f64) {
-    let mut list = ParticleList;
-
     resolve_pair_interactions();
     compute_drag();
 
-    for particle in list.iter_mut() {
+    for particle in ParticleList.iter_mut() {
         particle.vel += particle.acc * dt;
         particle.pos += particle.vel * dt;
         particle.acc = Vector2::zero();
@@ -28,41 +26,39 @@ pub fn update(dt: f64) {
 }
 
 fn resolve_pair_interactions() {
-    let mut list = ParticleList;
 
-    for i in 0..list.len() - 1 {
-        for j in i + 1..list.len() {
+    for particle in ParticleList.iter_mut() {
+        for i in particle.receives_gravity_from.iter() {
+            let direction = (ParticleList[*i].pos - particle.pos).normalize();
+            let dist = Vector2::dist(ParticleList[*i].pos, particle.pos);
+            particle.acc += ParticleList[*i].acc + GRAV * ParticleList[*i].mass * direction / dist.powi(2);
+        }
+    }
+
+    for i in 0..ParticleList.len() - 1 {
+        for j in i + 1..ParticleList.len() {
             
-            let direction = (list[j].pos - list[i].pos).normalize();
+            let direction = (ParticleList[j].pos - ParticleList[i].pos).normalize();
 
-            let mut dist = Vector2::dist(list[i].pos, list[j].pos);
-            let min_dist = list[i].radius + list[j].radius;
-            if dist < min_dist {
+            let dist = Vector2::dist(ParticleList[i].pos, ParticleList[j].pos);
+            let min_dist = ParticleList[i].radius + ParticleList[j].radius;
+            if dist < ParticleList[i].radius + ParticleList[j].radius {
                 
                 let overlap = min_dist - dist;
 
-                list[i].pos -= overlap * direction / 2.0;
-                list[j].pos += overlap * direction / 2.0;
+                ParticleList[i].pos -= overlap * direction / 2.0;
+                ParticleList[j].pos += overlap * direction / 2.0;
 
-                let total_momentum = list[i].mass * list[i].vel + list[j].mass * list[j].vel;
-                let total_mass = list[i].mass + list[j].mass;
+                let total_momentum = ParticleList[i].mass * ParticleList[i].vel + ParticleList[j].mass * ParticleList[j].vel;
+                let total_mass = ParticleList[i].mass + ParticleList[j].mass;
 
-                let a_vel = (total_momentum + list[j].mass * RESTITUTION * (list[j].vel - list[i].vel)) / total_mass;
-                let b_vel = (total_momentum + list[i].mass * RESTITUTION * (list[i].vel - list[j].vel)) / total_mass;
+                let a_vel = (total_momentum + ParticleList[j].mass * RESTITUTION * (ParticleList[j].vel - ParticleList[i].vel)) / total_mass;
+                let b_vel = (total_momentum + ParticleList[i].mass * RESTITUTION * (ParticleList[i].vel - ParticleList[j].vel)) / total_mass;
 
-                list[i].vel = a_vel;
-                list[j].vel = b_vel;
-
-                dist = min_dist;
+                ParticleList[i].vel = a_vel;
+                ParticleList[j].vel = b_vel;
 
             }
-
-            let grav = GRAV / dist.powi(2);
-            let a_acc = grav * list[j].mass * direction;
-            let b_acc = grav * list[i].mass * direction;
-
-            list[i].acc += a_acc;
-            list[j].acc -= b_acc;
             
         }
     }
@@ -70,9 +66,7 @@ fn resolve_pair_interactions() {
 }
 
 fn compute_drag() {
-    let mut list = ParticleList;
-
-    for particle in list.iter_mut() {
+    for particle in ParticleList.iter_mut() {
         let drag = particle.vel * DRAG;
         particle.acc += drag;
     }

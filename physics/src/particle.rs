@@ -3,16 +3,18 @@ use std::ops::{Deref, DerefMut};
 
 use crate::vector2::Vector2;
 use crate::GRAV;
+use crate::alert;
 
 const MAX_SPEED: f64 = 20.0;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct Particle {
     pub pos: Vector2,
     pub vel: Vector2,
     pub acc: Vector2,
     pub mass:   f64,
-    pub radius: f64
+    pub radius: f64,
+    pub receives_gravity_from: Vec<usize>
 }
 
 static mut LIST: Vec<Particle> = Vec::new();
@@ -22,9 +24,10 @@ pub fn add_particle(x: f64, y: f64, mass: f64, radius: f64) {
     unsafe { LIST.push(Particle {
         pos: Vector2::new(x, y),
         vel: Vector2::new(0.0, 0.0),
-        acc: Vector2::new(0.0, -10.0),
+        acc: Vector2::new(0.0, 0.0),
         mass,
-        radius
+        radius,
+        receives_gravity_from: Vec::new()
     }) }
 }
 
@@ -45,9 +48,26 @@ pub fn add_orbiting_particle(index: usize, x: f64, y: f64, mass: f64, radius: f6
             vel: velocity_magnitude * direction + base.vel,
             acc: Vector2::new(0.0, 0.0),
             mass,
-            radius
+            radius,
+            receives_gravity_from: vec![index]
         }) }
+    } else {
+        alert("no particle found when constructing orbit");
     }
+
+}
+
+#[wasm_bindgen]
+pub fn add_orbiting_pair(x: f64, y: f64, mass1: f64, mass2: f64, radius1: f64, radius2: f64, orbit_clockwise: bool) {
+
+    // if let Some(base) = ParticleList.get(index) {
+
+    // }
+
+    add_particle(x, y, mass1, radius1);
+    add_orbiting_particle(0, x + 20.0, y, mass2, radius2, orbit_clockwise);
+    // ParticleList[0].vel = -1.0 * ParticleList[1].vel * ParticleList[1].mass / (ParticleList[0].mass + ParticleList[1].mass);
+    // ParticleList[1].vel += ParticleList[0].vel;
 
 }
 
