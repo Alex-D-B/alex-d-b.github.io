@@ -22,14 +22,18 @@
 
         camera.position.setZ(30);
 
+        document.onwheel = (event: WheelEvent) => {
+            camera.position.z += event.deltaY * 0.05;
+        }
+
         const spheres = [];
-        function makeParticle(x: number, y: number, mass: number, radius: number) {
+        function makeParticle(x: number, y: number, mass: number, radius: number, isContainer: boolean = false) {
             const geometry = new THREE.SphereGeometry(radius);
             const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.x = x;
             sphere.position.y = y;
-            Physics.add_particle(x, y, mass, radius);
+            Physics.add_particle(x, y, mass, radius, isContainer ? 1 : 0);
             spheres.push(sphere);
             scene.add(sphere);
         }
@@ -45,26 +49,15 @@
             scene.add(sphere);
         }
 
-        function makeOrbitingPair() {
-            const geometry1 = new THREE.SphereGeometry(5);
-            const geometry2 = new THREE.SphereGeometry(2);
-            const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
-            const sphere1 = new THREE.Mesh(geometry1, material);
-            const sphere2 = new THREE.Mesh(geometry2, material);
-            // sphere1.position.x = x;
-            // sphere2.position.y = y;
-            Physics.add_orbiting_pair(0, 0, 100, 100, 5, 2, true);
-            spheres.push(sphere1);
-            scene.add(sphere1);
-            spheres.push(sphere2);
-            scene.add(sphere2);
-        }
+        // makeParticle(0, 0, 10000, 5); // sun
+        // makeOrbitingParticle(0, 15, 0, 100, 2, true); // project
+        // makeOrbitingParticle(1, 15, 5, 0.05, 1, true); // project moon
 
-        makeParticle(0, 0, 10000, 5); // sun
-        makeOrbitingParticle(0, 20, 0, 100, 2, true); // project
-        makeOrbitingParticle(1, 20, 5, 0.05, 1, true); // project moon
-        // makeOrbitingPair();
-
+        makeParticle(1, 1, 3, 2);
+        makeParticle(-1, -1, 5, 2.5);
+        makeParticle(5, 0, 2, 1.5);
+        makeParticle(0, 0, 10000, 10, true);
+        
         const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
 
         const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
@@ -153,4 +146,4 @@
 
 </script>
 
-<canvas id="bg" class="fixed left-0 top-0"></canvas>
+<canvas id="bg" class="fixed left-0 top-0 -z-10"></canvas>

@@ -14,20 +14,42 @@ pub struct Particle {
     pub acc: Vector2,
     pub mass:   f64,
     pub radius: f64,
-    pub receives_gravity_from: Vec<usize>
+    pub receives_gravity_from: Vec<usize>,
+    pub particle_type: ParticleType
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum ParticleType {
+    Sphere = 0,
+    SphereContainer = 1
+}
+
+pub use ParticleType::{Sphere, SphereContainer};
+
+impl TryFrom<isize> for ParticleType {
+    type Error = ();
+
+    fn try_from(value: isize) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Sphere),
+            1 => Ok(SphereContainer),
+            _ => Err(())
+        }
+    }
 }
 
 static mut LIST: Vec<Particle> = Vec::new();
 
 #[wasm_bindgen]
-pub fn add_particle(x: f64, y: f64, mass: f64, radius: f64) {
+pub fn add_particle(x: f64, y: f64, mass: f64, radius: f64, particle_type: isize) {
     unsafe { LIST.push(Particle {
         pos: Vector2::new(x, y),
         vel: Vector2::new(0.0, 0.0),
         acc: Vector2::new(0.0, 0.0),
         mass,
         radius,
-        receives_gravity_from: Vec::new()
+        receives_gravity_from: Vec::new(),
+        particle_type: particle_type.try_into().expect("Invalid particle type")
     }) }
 }
 
@@ -49,25 +71,12 @@ pub fn add_orbiting_particle(index: usize, x: f64, y: f64, mass: f64, radius: f6
             acc: Vector2::new(0.0, 0.0),
             mass,
             radius,
-            receives_gravity_from: vec![index]
+            receives_gravity_from: vec![index],
+            particle_type: Sphere
         }) }
     } else {
         alert("no particle found when constructing orbit");
     }
-
-}
-
-#[wasm_bindgen]
-pub fn add_orbiting_pair(x: f64, y: f64, mass1: f64, mass2: f64, radius1: f64, radius2: f64, orbit_clockwise: bool) {
-
-    // if let Some(base) = ParticleList.get(index) {
-
-    // }
-
-    add_particle(x, y, mass1, radius1);
-    add_orbiting_particle(0, x + 20.0, y, mass2, radius2, orbit_clockwise);
-    // ParticleList[0].vel = -1.0 * ParticleList[1].vel * ParticleList[1].mass / (ParticleList[0].mass + ParticleList[1].mass);
-    // ParticleList[1].vel += ParticleList[0].vel;
 
 }
 
@@ -78,12 +87,12 @@ pub fn remove_particle(index: usize) {
 
 #[wasm_bindgen]
 pub fn apply_x(force: f64) {
-    unsafe { if LIST[0].vel.magnitude() < MAX_SPEED { LIST[0].acc.x += force; } }
+    unsafe { /*if LIST[0].vel.magnitude() < MAX_SPEED {*/ LIST[0].acc.x += force; /*}*/ }
 }
 
 #[wasm_bindgen]
 pub fn apply_y(force: f64) {
-    unsafe { if LIST[0].vel.magnitude() < MAX_SPEED { LIST[0].acc.y += force; } }
+    unsafe { /*if LIST[0].vel.magnitude() < MAX_SPEED {*/ LIST[0].acc.y += force; /*}*/ }
 }
 
 #[wasm_bindgen]
