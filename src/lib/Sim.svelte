@@ -103,9 +103,11 @@
             torus.rotation.y += 0.05;
             torus.rotation.z += 0.01;
 
+            let buffer = new Float64Array(2);
             spheres.forEach((sphere, i) => {
-                let pos = Physics.get_particle(i);
-                [sphere.position.x, sphere.position.y] = pos;
+                Physics.get_particle(i, buffer);
+                sphere.position.x = buffer[0];
+                sphere.position.y = buffer[1];
                 // if (cols.has(i)) {
                 //     sphere.material.color.setHex(0x00ff00);
                 // } else {

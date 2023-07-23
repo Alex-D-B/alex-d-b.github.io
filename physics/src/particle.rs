@@ -96,8 +96,10 @@ pub fn apply_y(force: f64) {
 }
 
 #[wasm_bindgen]
-pub fn get_particle(index: usize) -> Option<Vec<f64>> {
-    unsafe { LIST.get(index).map(|p| vec![p.pos.x, p.pos.y]) }
+pub fn get_particle(index: usize, buffer: &mut [f64]) {
+    unsafe { if let Some(particle) = LIST.get(index) {
+        (buffer[0], buffer[1]) = particle.pos.into();
+    } }
 }
 
 pub struct ParticleList;
