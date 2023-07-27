@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use particle::{ParticleList, SphereContainer};
+use particle::{ParticleList, SphereContainer, RelativePosition, Gravity, RelativePositionAndGravity};
 use vector2::Vector2;
 use constants::*;
 
@@ -28,10 +28,22 @@ pub fn update(dt: f64) {
 fn resolve_pair_interactions() {
 
     for particle in ParticleList.iter_mut() {
-        for i in particle.receives_gravity_from.iter() {
-            let direction = (ParticleList[*i].pos - particle.pos).normalize();
-            let dist = Vector2::dist(ParticleList[*i].pos, particle.pos);
-            particle.acc += ParticleList[*i].acc + GRAV * ParticleList[*i].mass * direction / dist.powi(2);
+        for interaction in particle.interacts_with.iter() {
+            match interaction {
+                RelativePosition(i) => {
+                    particle.acc += ParticleList[*i].acc;
+                },
+                Gravity(i) => {
+                    let direction = (ParticleList[*i].pos - particle.pos).normalize();
+                    let dist = Vector2::dist(ParticleList[*i].pos, particle.pos);
+                    particle.acc += GRAV * ParticleList[*i].mass * direction / dist.powi(2);
+                },
+                RelativePositionAndGravity(i) => {
+                    let direction = (ParticleList[*i].pos - particle.pos).normalize();
+                    let dist = Vector2::dist(ParticleList[*i].pos, particle.pos);
+                    particle.acc += ParticleList[*i].acc + GRAV * ParticleList[*i].mass * direction / dist.powi(2);
+                }
+            }
         }
     }
 
@@ -98,7 +110,7 @@ fn handle_container_collision(container_idx: usize, particle_idx: usize, dist: f
             let a_vel = (total_momentum + ParticleList[particle_idx].mass * RESTITUTION * (ParticleList[particle_idx].vel - ParticleList[container_idx].vel)) / total_mass;
             let b_vel = (total_momentum + ParticleList[container_idx].mass * RESTITUTION * (ParticleList[container_idx].vel - ParticleList[particle_idx].vel)) / total_mass;
 
-            ParticleList[container_idx].vel = a_vel;
+            // ParticleList[container_idx].vel = a_vel;
             ParticleList[particle_idx].vel = b_vel;
 
         }
