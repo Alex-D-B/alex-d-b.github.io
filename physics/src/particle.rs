@@ -5,7 +5,7 @@ use crate::vector2::Vector2;
 use crate::GRAV;
 use crate::alert;
 
-const MAX_SPEED: f64 = 20.0;
+// const MAX_SPEED: f64 = 20.0;
 
 #[derive(Clone, Debug)]
 pub struct Particle {

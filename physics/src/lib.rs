@@ -107,7 +107,7 @@ fn handle_container_collision(container_idx: usize, particle_idx: usize, dist: f
             let total_momentum = ParticleList[container_idx].mass * ParticleList[container_idx].vel + ParticleList[particle_idx].mass * ParticleList[particle_idx].vel;
             let total_mass = ParticleList[container_idx].mass + ParticleList[particle_idx].mass;
 
-            let a_vel = (total_momentum + ParticleList[particle_idx].mass * RESTITUTION * (ParticleList[particle_idx].vel - ParticleList[container_idx].vel)) / total_mass;
+            // let a_vel = (total_momentum + ParticleList[particle_idx].mass * RESTITUTION * (ParticleList[particle_idx].vel - ParticleList[container_idx].vel)) / total_mass;
             let b_vel = (total_momentum + ParticleList[container_idx].mass * RESTITUTION * (ParticleList[container_idx].vel - ParticleList[particle_idx].vel)) / total_mass;
 
             // ParticleList[container_idx].vel = a_vel;

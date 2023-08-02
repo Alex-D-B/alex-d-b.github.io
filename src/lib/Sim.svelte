@@ -90,19 +90,30 @@
 
 //////////////////////////////////////////////////////////////////////////////////
 
-        makeOrbitingAnchor(0, 0, -75, 1000, false);             // rust connect 4 project
-        makeOrbitingParticle(14, 3.5, -75, 100, 3, false, false);
-        makeOrbitingParticle(14, -3.5, -75, 100, 2, false, false);  // index 16
+        makeOrbitingAnchor(0, 0, -60, 1000, false);             // rust connect 4 project
+        makeOrbitingParticle(14, 3.5, -60, 100, 3, false, false);
+        makeOrbitingParticle(14, -3.5, -60, 100, 2, false, false);  // index 16
 
-        makeOrbitingParticle(0, -90, 0, 400, 7, false, false);  // index 17
+        makeOrbitingParticle(0, -75, 0, 400, 7, false, false);  // index 17
 
-        const beltStartingRadius = 55;                          // asteroids project
+        const beltStartingRadius = 90;                          // asteroids project
         for (let i = 0; i < 150; ++i) {
             const radius = beltStartingRadius + ((7 * i) % 5);
             makeOrbitingParticle(0, radius * Math.cos(0.5 * i), radius * Math.sin(0.5 * i), 1, 0.5, false, false);
         }                                                       // index 117
 
-        makeOrbitingParticle(0, 120 * Math.cos(2), 120 * Math.sin(2), 20, 3, false, false);
+        makeOrbitingParticle(0, 120 * Math.cos(2), 120 * Math.sin(2), 20, 3, false, false); // index 118
+
+        // comet
+        makeParticle(200, 50, 11, 1.5, false);
+        Physics.set_initial_velocity(169, -9, -1.5);
+        Physics.receive_gravtiy_from(169, 0);
+        Physics.receive_gravtiy_from(169, 2);
+        Physics.receive_gravtiy_from(169, 3);
+        Physics.receive_gravtiy_from(169, 15);
+        Physics.receive_gravtiy_from(169, 16);
+        Physics.receive_gravtiy_from(169, 17);
+        Physics.receive_gravtiy_from(169, 118);                 // index 119
 
         function animate() {
             requestAnimationFrame(animate);
