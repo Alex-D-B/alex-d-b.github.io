@@ -28,7 +28,8 @@ jobs:
         run: git status
       - name: Commit Changes
         run: |
-          git config --local user.name "deploy-bot"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add ./docs
           git commit -m "Auto build target."
       - name: Push Changes
