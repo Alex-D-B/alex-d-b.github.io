@@ -19,11 +19,12 @@ jobs:
           npm install
       - name: Build
         run: |
+          rm -r ./docs
           cd physics/
           wasm-pack build --target web
           cd ../
           npm run build
-          cp -r ./dist/ ./docs/
+          mv -r ./dist ./docs
       - name: Check for Changes
         run: git status
       - name: Commit Changes
