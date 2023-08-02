@@ -24,7 +24,7 @@ jobs:
           wasm-pack build --target web
           cd ../
           npm run build
-          mv -r ./dist ./docs
+          mv ./dist ./docs
       - name: Check for Changes
         run: git status
       - name: Commit Changes
