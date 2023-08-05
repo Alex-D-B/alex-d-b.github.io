@@ -48,6 +48,17 @@
             spheres.push(sphere);
             scene.add(sphere);
         }
+        
+        function makeEllipticOrbitingParticle(index: number, x: number, y: number, mass: number, radius: number, semiMajorAxis: number, isContainer: boolean, orbitClockwise: boolean) {
+            const geometry = new THREE.SphereGeometry(radius);
+            const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.position.x = x;
+            sphere.position.y = y;
+            Physics.add_elliptic_orbiting_particle(index, x, y, mass, radius, semiMajorAxis, isContainer ? 1 : 0, orbitClockwise);
+            spheres.push(sphere);
+            scene.add(sphere);
+        }
 
         function makeOrbitingAnchor(index: number, x: number, y: number, mass: number, orbitClockwise: boolean) {
             Physics.add_orbiting_particle(index, x, y, mass, 0, 0, orbitClockwise);
@@ -100,20 +111,23 @@
         for (let i = 0; i < 150; ++i) {
             const radius = beltStartingRadius + ((7 * i) % 5);
             makeOrbitingParticle(0, radius * Math.cos(0.5 * i), radius * Math.sin(0.5 * i), 1, 0.5, false, false);
-        }                                                       // index 117
+        }                                                       // index 167
 
-        makeOrbitingParticle(0, 120 * Math.cos(2), 120 * Math.sin(2), 20, 3, false, false); // index 118
+        makeOrbitingParticle(0, 120 * Math.cos(2), 120 * Math.sin(2), 20, 3, false, false); // index 168
 
         // comet
-        makeParticle(200, 50, 11, 1.5, false);
-        Physics.set_initial_velocity(169, -9, -1.5);
-        Physics.receive_gravtiy_from(169, 0);
-        Physics.receive_gravtiy_from(169, 2);
-        Physics.receive_gravtiy_from(169, 3);
-        Physics.receive_gravtiy_from(169, 15);
-        Physics.receive_gravtiy_from(169, 16);
-        Physics.receive_gravtiy_from(169, 17);
-        Physics.receive_gravtiy_from(169, 118);                 // index 119
+        // makeParticle(200, 50, 11, 1.5, false);
+        // Physics.set_initial_velocity(169, -9, -1.5);
+        // Physics.receive_gravtiy_from(169, 0);
+        // Physics.receive_gravtiy_from(169, 2);
+        // Physics.receive_gravtiy_from(169, 3);
+        // Physics.receive_gravtiy_from(169, 15);
+        // Physics.receive_gravtiy_from(169, 16);
+        // Physics.receive_gravtiy_from(169, 17);
+        // Physics.receive_gravtiy_from(169, 118);                 // index 169
+        makeEllipticOrbitingParticle(0, 200, 50, 11, 1.5, 110, false, false);   // index 169
+        Physics.set_radius(169, 0);
+        
 
         function animate() {
             requestAnimationFrame(animate);

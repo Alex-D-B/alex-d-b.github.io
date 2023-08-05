@@ -5,7 +5,7 @@
 
 <main>
     <Sim />
-    <ProjectCard title="Physics Engine" description="this" scale={1} />
+    <!-- <ProjectCard title="Physics Engine" description="this" scale={1} /> -->
 </main>
 
 <style global lang="postcss">

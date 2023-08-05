@@ -106,6 +106,33 @@ pub fn add_orbiting_particle(index: usize, x: f64, y: f64, mass: f64, radius: f6
 }
 
 #[wasm_bindgen]
+pub fn add_elliptic_orbiting_particle(index: usize, x: f64, y: f64, mass: f64, radius: f64, semi_major_axis: f64, particle_type: isize, orbit_clockwise: bool) {
+
+    if let Some(base) = ParticleList.get(index) {
+        let local_pos = Vector2::new(x, y) - base.pos;
+        let mut direction = local_pos.normalize();
+        (direction.x, direction.y) = (-direction.y, direction.x);
+        if orbit_clockwise {
+            direction = -1.0 * direction;
+        }
+        let velocity_magnitude = (GRAV * (base.mass + mass) * (2.0 / local_pos.magnitude() - 1.0 / semi_major_axis)).sqrt();
+        
+        unsafe { LIST.push(Particle {
+            pos: Vector2::new(x, y),
+            vel: velocity_magnitude * direction + base.vel,
+            acc: Vector2::new(0.0, 0.0),
+            mass,
+            radius,
+            interacts_with: vec![RelativePositionAndGravity(index)],
+            particle_type: particle_type.try_into().expect("Invalid particle type")
+        }) }
+    } else {
+        alert("no particle found when constructing orbit");
+    }
+
+}
+
+#[wasm_bindgen]
 pub fn set_initial_velocity(target: usize, vel_x: f64, vel_y: f64) {
     unsafe { LIST[target].vel = Vector2::new(vel_x, vel_y); }
 }
@@ -115,6 +142,13 @@ pub fn make_relative_to(target: usize, source: usize) {
     unsafe {
         LIST[target].vel += LIST[source].vel;
         LIST[target].interacts_with.push(RelativePosition(source));
+    }
+}
+
+#[wasm_bindgen]
+pub fn set_radius(target: usize, radius: f64) {
+    unsafe {
+        LIST[target].radius = radius
     }
 }
 
