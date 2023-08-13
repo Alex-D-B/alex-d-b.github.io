@@ -1,11 +1,13 @@
 <script lang="ts">
     import Sim from './lib/Sim.svelte';
-    import ProjectCard from './lib/ProjectCard.svelte';
+    import ProjectDisplay from './lib/ProjectDisplay.svelte';
+    import AboutMe from './lib/AboutMe.svelte';
 </script>
 
-<main>
+<main class="min-w-full">
     <Sim />
-    <!-- <ProjectCard title="Physics Engine" description="this" scale={1} /> -->
+    <AboutMe />
+    <ProjectDisplay />
 </main>
 
 <style global lang="postcss">

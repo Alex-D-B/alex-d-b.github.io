@@ -17,13 +17,29 @@
         });
 
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(window.innerWidth, window.innerHeight); renderer.render(scene, camera); return;
+
+        // window.onresize = () => {
+        //     camera.aspect = window.innerWidth / window.innerHeight;
+        //     renderer.setPixelRatio(window.devicePixelRatio);
+        //     renderer.setSize(window.innerWidth, window.innerHeight);
+        //     console.log('resizing');
+        // }
 
         camera.position.setZ(180);
 
-        document.onwheel = (event: WheelEvent) => {
-            camera.position.z += event.deltaY * 0.05;
-            console.log(camera.position.z);
+        // document.onwheel = (event: WheelEvent) => {
+        //     camera.position.z += event.deltaY * 0.05;
+            
+        //     // console.log(camera.position.z);
+        // }
+
+        document.onscroll = () => {
+            console.log(window.scrollY)
+            const scroll = window.scrollY;
+            if (scroll < 1000) {
+
+            }
         }
 
         const spheres: THREE.Mesh[] = [];
@@ -105,6 +121,7 @@
         makeOrbitingParticle(14, 3.5, -60, 100, 3, false, false);
         makeOrbitingParticle(14, -3.5, -60, 100, 2, false, false);  // index 16
 
+        // robotics codebase
         makeOrbitingParticle(0, -75, 0, 400, 7, false, false);  // index 17
 
         const beltStartingRadius = 90;                          // asteroids project
