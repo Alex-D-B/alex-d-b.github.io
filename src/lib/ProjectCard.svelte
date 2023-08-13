@@ -5,18 +5,18 @@
     export let languages: string[] = [];
     export let frameworks: string[] = [];
     export let scale: number;
-    export let xAlign: 0 | 1 | 2;
+    export let xAlign: 0 | 1 | 2 | 3;
     export let yOffset: number;
-    export let rowNum: number;
+    export let id = "";
 
 </script>
 
 <div
-    style={`transform: scale(${scale}); margin-top: ${yOffset}px; grid-column: ${xAlign + 1}; grid-row: ${rowNum + 1};`}
-    class="bg-gray-400 rounded p-4 relative"
+    {id}
+    style={`transform: scale(${scale}); margin-top: ${yOffset}px; grid-column: ${xAlign + 1} / ${xAlign + 3};`}
+    class="bg-gray-400 rounded p-4 relative min-h-[600px]"
 >
     <p class="font-bold">{title}</p>
-    <div></div>
     <p>{description}</p>
     {#each languages as lang}
         <p>{lang}</p>
@@ -25,3 +25,4 @@
         <p>{frame}</p>
     {/each}
 </div>
+<div style={`grid-column: ${5 - xAlign};`}></div>

@@ -17,7 +17,7 @@
         });
 
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight); renderer.render(scene, camera); return;
+        renderer.setSize(window.innerWidth, window.innerHeight);
 
         // window.onresize = () => {
         //     camera.aspect = window.innerWidth / window.innerHeight;
@@ -35,12 +35,12 @@
         // }
 
         document.onscroll = () => {
-            console.log(window.scrollY)
-            const scroll = window.scrollY;
-            if (scroll < 1000) {
-
-            }
+            const site = document.getElementById('site');
+            let rect = site.getBoundingClientRect();
+            console.log(rect.top - document.body.getBoundingClientRect().top);
         }
+
+        renderer.render(scene, camera); return;
 
         const spheres: THREE.Mesh[] = [];
         function makeParticle(x: number, y: number, mass: number, radius: number, isContainer: boolean = false) {

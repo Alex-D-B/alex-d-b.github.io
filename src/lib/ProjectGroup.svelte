@@ -1,8 +1,9 @@
 <script lang="ts">
     export let title: string;
+    export let yOffset: number;
 </script>
 
-<div>
+<div style={`margin-top: ${yOffset}px; grid-column-start: 1; grid-column: 2 / 5;`}>
     <p>{title}</p>
-    <slot />
 </div>
+<slot />
