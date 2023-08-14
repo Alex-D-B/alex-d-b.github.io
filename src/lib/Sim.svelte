@@ -13,11 +13,14 @@
         const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
         const renderer = new THREE.WebGLRenderer({
-            canvas: document.querySelector('#bg')
+            canvas: document.querySelector('#bg') as Element
         });
 
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const halfWidth = window.innerWidth / 2;
+        const halfHeight = window.innerHeight / 2;
 
         // window.onresize = () => {
         //     camera.aspect = window.innerWidth / window.innerHeight;
@@ -28,63 +31,124 @@
 
         camera.position.setZ(180);
 
-        // document.onwheel = (event: WheelEvent) => {
-        //     camera.position.z += event.deltaY * 0.05;
-            
-        //     // console.log(camera.position.z);
-        // }
-
-        document.onscroll = () => {
-            const site = document.getElementById('site');
-            let rect = site.getBoundingClientRect();
-            console.log(rect.top - document.body.getBoundingClientRect().top);
+        const pixelsToWorldCoords = (x: number, y: number): THREE.Vector3 => {
+            const halfWidth = window.innerWidth / 2;
+            const halfHeight = window.innerHeight / 2;
+            let pos = new THREE.Vector3(
+                -1 + x / halfWidth,
+                1 - y / halfHeight
+            ).unproject(camera);
+            pos.sub(camera.position).normalize();
+            let dist = -camera.position.z / pos.z;
+            return new THREE.Vector3().copy(camera.position).add(pos.multiplyScalar(dist));
         }
 
-        renderer.render(scene, camera); return;
+        const spheres: ({mesh: THREE.Mesh, forcedPos?: THREE.Vector3} | null)[] = [];
+        let globalOffset: number = 0;
+        const particleNames = new Map<string, number>();
+        document.onscroll = () => {
+            const site = document.getElementById('site')?.getBoundingClientRect();
+            const index = particleNames.get('physics container 1');
+            if (!index) {
+                console.error('physics container 1 not found');
+                return;
+            }
+            const sphere = spheres[index];
+            if (sphere) {
+                if (site && site.top < 50) {
+                    globalOffset = 500;
+                    sphere.forcedPos = pixelsToWorldCoords(halfWidth * 6 / 5, (site.bottom + site.top) / 2);
+                } else {
+                    globalOffset = 0;
+                    sphere.forcedPos = undefined;
+                }
+            }
+        }
 
-        const spheres: THREE.Mesh[] = [];
-        function makeParticle(x: number, y: number, mass: number, radius: number, isContainer: boolean = false) {
+        // renderer.render(scene, camera); return;
+
+        let index = 0;
+        function makeParticle(x: number, y: number, mass: number, radius: number, isContainer: boolean = false, name?: string) {
+            if (name) {
+                particleNames.set(name, index);
+                console.log(particleNames)
+            }
+            ++index;
+
             const geometry = new THREE.SphereGeometry(radius);
             const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.x = x;
             sphere.position.y = y;
             Physics.add_particle(x, y, mass, radius, isContainer ? 1 : 0);
-            spheres.push(sphere);
+            spheres.push({mesh: sphere});
             scene.add(sphere);
         }
 
-        function makeOrbitingParticle(index: number, x: number, y: number, mass: number, radius: number, isContainer: boolean, orbitClockwise: boolean) {
+        function makeOrbitingParticle(target: string, x: number, y: number, mass: number, radius: number, isContainer: boolean, orbitClockwise: boolean, name?: string) {
+            if (name) {
+                particleNames.set(name, index);
+            }
+            ++index;
+
+            let targetIndex = particleNames.get(target);
+            if (targetIndex === undefined) {
+                console.error(`Target ${target} not found`);
+                return;
+            }
+
             const geometry = new THREE.SphereGeometry(radius);
             const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.x = x;
             sphere.position.y = y;
-            Physics.add_orbiting_particle(index, x, y, mass, radius, isContainer ? 1 : 0, orbitClockwise);
-            spheres.push(sphere);
+            Physics.add_orbiting_particle(targetIndex, x, y, mass, radius, isContainer ? 1 : 0, orbitClockwise);
+            spheres.push({mesh: sphere});
             scene.add(sphere);
         }
         
-        function makeEllipticOrbitingParticle(index: number, x: number, y: number, mass: number, radius: number, semiMajorAxis: number, isContainer: boolean, orbitClockwise: boolean) {
+        function makeEllipticOrbitingParticle(target: string, x: number, y: number, mass: number, radius: number, semiMajorAxis: number, isContainer: boolean, orbitClockwise: boolean, name?: string) {
+            if (name) {
+                particleNames.set(name, index);
+            }
+            ++index;
+
+            let targetIndex = particleNames.get(target);
+            if (targetIndex === undefined) {
+                console.error(`Target ${target} not found`);
+                return;
+            }
+
             const geometry = new THREE.SphereGeometry(radius);
             const material = new THREE.MeshBasicMaterial({ color: 0xFF6347, wireframe: true });
             const sphere = new THREE.Mesh(geometry, material);
             sphere.position.x = x;
             sphere.position.y = y;
-            Physics.add_elliptic_orbiting_particle(index, x, y, mass, radius, semiMajorAxis, isContainer ? 1 : 0, orbitClockwise);
-            spheres.push(sphere);
+            Physics.add_elliptic_orbiting_particle(targetIndex, x, y, mass, radius, semiMajorAxis, isContainer ? 1 : 0, orbitClockwise);
+            spheres.push({mesh: sphere});
             scene.add(sphere);
         }
 
-        function makeOrbitingAnchor(index: number, x: number, y: number, mass: number, orbitClockwise: boolean) {
-            Physics.add_orbiting_particle(index, x, y, mass, 0, 0, orbitClockwise);
+        function makeOrbitingAnchor(target: string, x: number, y: number, mass: number, orbitClockwise: boolean, name?: string) {
+            if (name) {
+                particleNames.set(name, index);
+            }
+            ++index;
+
+            let targetIndex = particleNames.get(target);
+            if (targetIndex === undefined) {
+                console.error(`Target ${target} not found`);
+                return;
+            }
+            
+            Physics.add_orbiting_particle(targetIndex, x, y, mass, 0, 0, orbitClockwise);
             spheres.push(null);
         }
 
-        makeParticle(0, 0, 10000, 10, false);                   // sun
-        makeOrbitingAnchor(0, 25, 0, 100, false);               // physics engine project
-        makeOrbitingParticle(1, 22, 0, 100, 2, true, true);
-        makeOrbitingParticle(1, 28, 0, 100, 2, true, true);     // index 3
+        makeParticle(0, 0, 10000, 10, false, 'sun');                   // sun
+        makeOrbitingAnchor('sun', 25, 0, 100, false, 'physics');               // physics engine project
+        makeOrbitingParticle('physics', 22, 0, 100, 2, true, true, 'physics container 1');
+        makeOrbitingParticle('physics', 28, 0, 100, 2, true, true, 'physics container 2');     // index 3
 
         makeParticle(21, 0, 1, 0.5);                            // fill first physics engine project container
         Physics.set_initial_velocity(4, 2, -2);
@@ -112,25 +176,25 @@
         Physics.set_initial_velocity(11, 0.5, 1);
         Physics.make_relative_to(11, 3);                        // index 11
 
-        makeOrbitingParticle(0, 0, 40, 200, 4, false, false);   // news brief project
-        makeOrbitingParticle(12, -7, 40, 10, 1, false, true);   // index 13
+        makeOrbitingParticle('sun', 0, 40, 200, 4, false, false, 'news brief');   // news brief project
+        makeOrbitingParticle('news brief', -7, 40, 10, 1, false, true);   // index 13
 
 //////////////////////////////////////////////////////////////////////////////////
 
-        makeOrbitingAnchor(0, 0, -60, 1000, false);             // rust connect 4 project
-        makeOrbitingParticle(14, 3.5, -60, 100, 3, false, false);
-        makeOrbitingParticle(14, -3.5, -60, 100, 2, false, false);  // index 16
+        makeOrbitingAnchor('sun', 0, -60, 1000, false, 'rust connect 4');             // rust connect 4 project
+        makeOrbitingParticle('rust connect 4', 3.5, -60, 100, 3, false, false);
+        makeOrbitingParticle('rust connect 4', -3.5, -60, 100, 2, false, false);  // index 16
 
         // robotics codebase
-        makeOrbitingParticle(0, -75, 0, 400, 7, false, false);  // index 17
+        makeOrbitingParticle('sun', -75, 0, 400, 7, false, false, 'robotics codebase');  // index 17
 
         const beltStartingRadius = 90;                          // asteroids project
         for (let i = 0; i < 150; ++i) {
             const radius = beltStartingRadius + ((7 * i) % 5);
-            makeOrbitingParticle(0, radius * Math.cos(0.5 * i), radius * Math.sin(0.5 * i), 1, 0.5, false, false);
+            makeOrbitingParticle('sun', radius * Math.cos(0.5 * i), radius * Math.sin(0.5 * i), 1, 0.5, false, false);
         }                                                       // index 167
 
-        makeOrbitingParticle(0, 120 * Math.cos(2), 120 * Math.sin(2), 20, 3, false, false); // index 168
+        makeOrbitingParticle('sun', 120 * Math.cos(2), 120 * Math.sin(2), 20, 3, false, false); // index 168
 
         // comet
         // makeParticle(200, 50, 11, 1.5, false);
@@ -142,9 +206,8 @@
         // Physics.receive_gravtiy_from(169, 16);
         // Physics.receive_gravtiy_from(169, 17);
         // Physics.receive_gravtiy_from(169, 118);                 // index 169
-        makeEllipticOrbitingParticle(0, 200, 50, 11, 1.5, 110, false, false);   // index 169
+        makeEllipticOrbitingParticle('sun', 200, 50, 11, 1.5, 110, false, false, 'comet');   // index 169
         Physics.set_radius(169, 0);
-        
 
         function animate() {
             requestAnimationFrame(animate);
@@ -170,13 +233,13 @@
             spheres.forEach((sphere, i) => {
                 if (sphere === null) return;
                 Physics.get_particle(i, buffer);
-                sphere.position.x = buffer[0];
-                sphere.position.y = buffer[1];
-                // if (cols.has(i)) {
-                //     sphere.material.color.setHex(0x00ff00);
-                // } else {
-                //     sphere.material.color.setHex(0xff6347);
-                // }
+                if (sphere.forcedPos) {
+                    sphere.mesh.position.x = sphere.forcedPos.x;
+                    sphere.mesh.position.y = sphere.forcedPos.y;
+                } else {
+                    sphere.mesh.position.x = buffer[0] + globalOffset;
+                    sphere.mesh.position.y = buffer[1];
+                }
             });
 
             renderer.render(scene, camera);

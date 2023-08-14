@@ -4,6 +4,6 @@
 </script>
 
 <div style={`margin-top: ${yOffset}px; grid-column-start: 1; grid-column: 2 / 5;`}>
-    <p>{title}</p>
+    <p class="text-white">{title}</p>
 </div>
 <slot />
