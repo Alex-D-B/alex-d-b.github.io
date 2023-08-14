@@ -1,7 +1,9 @@
 <script lang="ts">
 
+    import type { ComponentType } from "svelte";
+
     export let title: string;
-    export let description: string;
+    export let description: ComponentType;
     export let languages: string[] = [];
     export let frameworks: string[] = [];
     export let scale: number;
@@ -18,7 +20,7 @@
     class="bg-gray-400 rounded p-4 relative min-h-[600px]"
 >
     <p class="font-bold">{title}</p>
-    <p>{description}</p>
+    <svelte:component this={description} />
     {#each languages as lang}
         <p>{lang}</p>
     {/each}

@@ -46,32 +46,35 @@
         const spheres: ({mesh: THREE.Mesh, forcedPos?: THREE.Vector3} | null)[] = [];
         let globalOffset: number = 0;
         const particleNames = new Map<string, number>();
-        document.onscroll = () => {
+        const onScroll = () => {
             const site = document.getElementById('site')?.getBoundingClientRect();
-            const index = particleNames.get('physics container 1');
+            const index = particleNames.get('physics');
             if (!index) {
-                console.error('physics container 1 not found');
+                console.error('physics not found');
                 return;
             }
-            const sphere = spheres[index];
-            if (sphere) {
-                if (site && site.top < 50) {
-                    globalOffset = 500;
-                    sphere.forcedPos = pixelsToWorldCoords(halfWidth * 6 / 5, (site.bottom + site.top) / 2);
-                } else {
-                    globalOffset = 0;
-                    sphere.forcedPos = undefined;
+            if (site && site.bottom > -100) {
+                globalOffset = 500;
+                camera.position.setZ(15);
+                const forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2);
+                for (let i = index + 1; i < index + 11; ++i) {
+                    const particle = spheres[i]!;
+                    particle.forcedPos = forcedPos;
+                }
+            } else {
+                globalOffset = 0;
+                camera.position.setZ(180);
+                for (let i = index + 1; i < index + 11; ++i) {
+                    const particle = spheres[i]!;
+                    particle.forcedPos = undefined;
                 }
             }
         }
-
-        // renderer.render(scene, camera); return;
 
         let index = 0;
         function makeParticle(x: number, y: number, mass: number, radius: number, isContainer: boolean = false, name?: string) {
             if (name) {
                 particleNames.set(name, index);
-                console.log(particleNames)
             }
             ++index;
 
@@ -230,12 +233,23 @@
             Physics.update(1.0 / 60);
 
             let buffer = new Float64Array(2);
+            let trueContainerX = 0;
+            let trueContainerY = 0;
+            let containerIndex = particleNames.get('physics')!;
             spheres.forEach((sphere, i) => {
-                if (sphere === null) return;
                 Physics.get_particle(i, buffer);
+                if (i === containerIndex) {
+                    trueContainerX = buffer[0];
+                    trueContainerY = buffer[1];
+                }
+                if (sphere === null) return;
                 if (sphere.forcedPos) {
                     sphere.mesh.position.x = sphere.forcedPos.x;
                     sphere.mesh.position.y = sphere.forcedPos.y;
+                    if (i >= containerIndex + 1 && i < containerIndex + 11) {
+                        sphere.mesh.position.x += buffer[0] - trueContainerX;
+                        sphere.mesh.position.y += buffer[1] - trueContainerY;
+                    }
                 } else {
                     sphere.mesh.position.x = buffer[0] + globalOffset;
                     sphere.mesh.position.y = buffer[1];
@@ -245,7 +259,9 @@
             renderer.render(scene, camera);
         }
 
+        onScroll();
         animate();
+        document.onscroll = onScroll;
 
     });
 
