@@ -22,12 +22,13 @@
         const halfWidth = window.innerWidth / 2;
         const halfHeight = window.innerHeight / 2;
 
-        // window.onresize = () => {
-        //     camera.aspect = window.innerWidth / window.innerHeight;
-        //     renderer.setPixelRatio(window.devicePixelRatio);
-        //     renderer.setSize(window.innerWidth, window.innerHeight);
-        //     console.log('resizing');
-        // }
+        window.onresize = () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            console.log('resizing');
+        }
 
         camera.position.setZ(180);
 
@@ -47,27 +48,44 @@
         let globalOffset: number = 0;
         const particleNames = new Map<string, number>();
         const onScroll = () => {
-            const site = document.getElementById('site')?.getBoundingClientRect();
-            const index = particleNames.get('physics');
-            if (!index) {
-                console.error('physics not found');
-                return;
-            }
-            if (site && site.bottom > -100) {
+            const site = document.getElementById('site')?.getBoundingClientRect()!;
+            const newsClient = document.getElementById('news client')!.getBoundingClientRect();
+            const newsServer = document.getElementById('news server')!.getBoundingClientRect();
+            const connectFourClient = document.getElementById('connect four client')!.getBoundingClientRect();
+            const connectFourServer = document.getElementById('connect four server')!.getBoundingClientRect();
+            const robotics = document.getElementById('robotics')!.getBoundingClientRect();
+            const asteroids = document.getElementById('asteroids')?.getBoundingClientRect()!;
+            if (asteroids.bottom > 0) {
                 globalOffset = 500;
                 camera.position.setZ(15);
-                const forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2);
+                let index = particleNames.get('physics')!;
+                let forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2);
                 for (let i = index + 1; i < index + 11; ++i) {
                     const particle = spheres[i]!;
                     particle.forcedPos = forcedPos;
                 }
+
+                index = particleNames.get('news brief')!;
+                forcedPos = pixelsToWorldCoords(halfWidth, (newsClient.bottom + newsServer.top) / 2);
+                spheres[index]!.forcedPos = forcedPos;
+                spheres[index + 1]!.forcedPos = forcedPos;
+
+                index = particleNames.get('rust connect 4')!;
+                forcedPos = pixelsToWorldCoords(halfWidth, (connectFourClient.bottom + connectFourServer.top) / 2);
+                spheres[index + 1]!.forcedPos = forcedPos;
+                spheres[index + 2]!.forcedPos = forcedPos;
+
+                index = particleNames.get('robotics codebase')!;
+                forcedPos = pixelsToWorldCoords(halfWidth / 2, (2 * robotics.bottom + robotics.top) / 3);
+                spheres[index]!.forcedPos = forcedPos;
             } else {
                 globalOffset = 0;
                 camera.position.setZ(180);
-                for (let i = index + 1; i < index + 11; ++i) {
-                    const particle = spheres[i]!;
-                    particle.forcedPos = undefined;
-                }
+                spheres.forEach((sphere) => {
+                    if (sphere !== null) {
+                        sphere.forcedPos = undefined;
+                    }
+                });
             }
         }
 
@@ -215,30 +233,32 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            const speed = 100;
+            // const speed = 100;
 
-            if (right) {
-                Physics.apply_x(speed);
-            }
-            if (left) {
-                Physics.apply_x(-speed);
-            }
-            if (up) {
-                Physics.apply_y(speed);
-            }
-            if (down) {
-                Physics.apply_y(-speed);
-            }
+            // if (right) {
+            //     Physics.apply_x(speed);
+            // }
+            // if (left) {
+            //     Physics.apply_x(-speed);
+            // }
+            // if (up) {
+            //     Physics.apply_y(speed);
+            // }
+            // if (down) {
+            //     Physics.apply_y(-speed);
+            // }
 
             Physics.update(1.0 / 60);
 
             let buffer = new Float64Array(2);
             let trueContainerX = 0;
             let trueContainerY = 0;
-            let containerIndex = particleNames.get('physics')!;
+            const physicsIndex = particleNames.get('physics')!;
+            const newsIndex = particleNames.get('news brief')!;
+            const connectFourIndex = particleNames.get('rust connect 4')!;
             spheres.forEach((sphere, i) => {
                 Physics.get_particle(i, buffer);
-                if (i === containerIndex) {
+                if (i === physicsIndex || i == newsIndex || i === connectFourIndex) {
                     trueContainerX = buffer[0];
                     trueContainerY = buffer[1];
                 }
@@ -246,7 +266,11 @@
                 if (sphere.forcedPos) {
                     sphere.mesh.position.x = sphere.forcedPos.x;
                     sphere.mesh.position.y = sphere.forcedPos.y;
-                    if (i >= containerIndex + 1 && i < containerIndex + 11) {
+                    if (
+                        (i >= physicsIndex + 1 && i < physicsIndex + 11)
+                        || i === newsIndex + 1
+                        || (i >= connectFourIndex + 1 && i < connectFourIndex + 3)
+                    ) {
                         sphere.mesh.position.x += buffer[0] - trueContainerX;
                         sphere.mesh.position.y += buffer[1] - trueContainerY;
                     }
