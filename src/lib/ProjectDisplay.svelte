@@ -14,7 +14,7 @@
     import AsteroidsDisc from '../descriptions/Asteroids.svelte';
 </script>
 
-<div class="grid grid-cols-5 p-8">
+<div class="grid grid-cols-5 p-8 mb-[100%]">
     <ProjectGroup title="Personal Site" yOffset={0}>
         <ProjectCard title="Svelte Client" description={SvelteClientDisc} languages={['JavaScript', 'TypeScript']} frameworks={['Svelte']} scale={1} xAlign={0} yOffset={0} id="site" />
         <ProjectCard title="Physics Engine" description={PhysicsEngineDisc} languages={['Rust']} scale={1} xAlign={3} yOffset={0} />
@@ -28,7 +28,7 @@
         <ProjectCard title="Client" description={RustConnectFourClientDisc} languages={['Rust']} frameworks={['Yew']} scale={1} xAlign={0} yOffset={-100} id="connect four client" />
     </ProjectGroup>
     <ProjectCard title="Robotics Codebase" description={RoboticsCodebaseDisc} languages={['C++', 'JavaScript']} scale={1} xAlign={1} yOffset={100} id="robotics" />
-    <ProjectCard title="Database Link Scraper" description={DatabaseLinkScraperDisc} languages={['Python']} scale={1} xAlign={2} yOffset={100} />
-    <ProjectCard title="3D Maze Generator" description={MazeGeneratorDisc} languages={['C#']} frameworks={['Unity']} scale={1} xAlign={1} yOffset={100} />
+    <ProjectCard title="Database Link Scraper" description={DatabaseLinkScraperDisc} languages={['Python']} scale={1} xAlign={2} yOffset={100} id="db scraper" />
+    <ProjectCard title="3D Maze Generator" description={MazeGeneratorDisc} languages={['C#']} frameworks={['Unity']} scale={1} xAlign={1} yOffset={100} id="maze" />
     <ProjectCard title="Asteroids" description={AsteroidsDisc} languages={['JavaScript']} scale={1} xAlign={0} yOffset={100} id="asteroids" />
 </div>

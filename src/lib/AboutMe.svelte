@@ -1,4 +1,4 @@
-<div class="text-white">
+<div class="text-black bg-slate-100 py-8">
     <p>Hey there, I'm Alex Broihier, currently a Math, Stats, and Computer Science student at UIUC. I am interested in...</p>
     <a href="/">Resume</a>
     <p>Work Experience:</p>

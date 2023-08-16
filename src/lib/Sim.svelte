@@ -19,15 +19,16 @@
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        const halfWidth = window.innerWidth / 2;
-        const halfHeight = window.innerHeight / 2;
+        let halfWidth = window.innerWidth / 2;
+        let halfHeight = window.innerHeight / 2;
 
         window.onresize = () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            
-            console.log('resizing');
+
+            halfWidth = window.innerWidth / 2;
+            halfHeight = window.innerHeight / 2;    
         }
 
         camera.position.setZ(180);
@@ -47,47 +48,6 @@
         const spheres: ({mesh: THREE.Mesh, forcedPos?: THREE.Vector3} | null)[] = [];
         let globalOffset: number = 0;
         const particleNames = new Map<string, number>();
-        const onScroll = () => {
-            const site = document.getElementById('site')?.getBoundingClientRect()!;
-            const newsClient = document.getElementById('news client')!.getBoundingClientRect();
-            const newsServer = document.getElementById('news server')!.getBoundingClientRect();
-            const connectFourClient = document.getElementById('connect four client')!.getBoundingClientRect();
-            const connectFourServer = document.getElementById('connect four server')!.getBoundingClientRect();
-            const robotics = document.getElementById('robotics')!.getBoundingClientRect();
-            const asteroids = document.getElementById('asteroids')?.getBoundingClientRect()!;
-            if (asteroids.bottom > 0) {
-                globalOffset = 500;
-                camera.position.setZ(15);
-                let index = particleNames.get('physics')!;
-                let forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2);
-                for (let i = index + 1; i < index + 11; ++i) {
-                    const particle = spheres[i]!;
-                    particle.forcedPos = forcedPos;
-                }
-
-                index = particleNames.get('news brief')!;
-                forcedPos = pixelsToWorldCoords(halfWidth, (newsClient.bottom + newsServer.top) / 2);
-                spheres[index]!.forcedPos = forcedPos;
-                spheres[index + 1]!.forcedPos = forcedPos;
-
-                index = particleNames.get('rust connect 4')!;
-                forcedPos = pixelsToWorldCoords(halfWidth, (connectFourClient.bottom + connectFourServer.top) / 2);
-                spheres[index + 1]!.forcedPos = forcedPos;
-                spheres[index + 2]!.forcedPos = forcedPos;
-
-                index = particleNames.get('robotics codebase')!;
-                forcedPos = pixelsToWorldCoords(halfWidth / 2, (2 * robotics.bottom + robotics.top) / 3);
-                spheres[index]!.forcedPos = forcedPos;
-            } else {
-                globalOffset = 0;
-                camera.position.setZ(180);
-                spheres.forEach((sphere) => {
-                    if (sphere !== null) {
-                        sphere.forcedPos = undefined;
-                    }
-                });
-            }
-        }
 
         let index = 0;
         function makeParticle(x: number, y: number, mass: number, radius: number, isContainer: boolean = false, name?: string) {
@@ -213,41 +173,89 @@
         for (let i = 0; i < 150; ++i) {
             const radius = beltStartingRadius + ((7 * i) % 5);
             makeOrbitingParticle('sun', radius * Math.cos(0.5 * i), radius * Math.sin(0.5 * i), 1, 0.5, false, false);
+            // Physics.receive_gravtiy_from(18 + i, 17);
         }                                                       // index 167
 
-        makeOrbitingParticle('sun', 120 * Math.cos(2), 120 * Math.sin(2), 20, 3, false, false); // index 168
+        makeOrbitingParticle('sun', 120 * Math.cos(1.75), 120 * Math.sin(1.75), 20, 3, false, false, "db scraper"); // index 168
+        makeEllipticOrbitingParticle('sun', 0, 130, 20, 2, 115, false, false, 'maze');
 
         // comet
-        // makeParticle(200, 50, 11, 1.5, false);
-        // Physics.set_initial_velocity(169, -9, -1.5);
-        // Physics.receive_gravtiy_from(169, 0);
-        // Physics.receive_gravtiy_from(169, 2);
-        // Physics.receive_gravtiy_from(169, 3);
-        // Physics.receive_gravtiy_from(169, 15);
-        // Physics.receive_gravtiy_from(169, 16);
-        // Physics.receive_gravtiy_from(169, 17);
-        // Physics.receive_gravtiy_from(169, 118);                 // index 169
-        makeEllipticOrbitingParticle('sun', 200, 50, 11, 1.5, 110, false, false, 'comet');   // index 169
-        Physics.set_radius(169, 0);
+        makeEllipticOrbitingParticle('sun', 200, 50, 11, 1.5, 110, false, false, 'comet');
+        Physics.set_radius(particleNames.get('comet')!, 0);
+
+        const onScroll = () => {
+            const site = document.getElementById('site')?.getBoundingClientRect()!;
+            const newsClient = document.getElementById('news client')!.getBoundingClientRect();
+            const newsServer = document.getElementById('news server')!.getBoundingClientRect();
+            const connectFourClient = document.getElementById('connect four client')!.getBoundingClientRect();
+            const connectFourServer = document.getElementById('connect four server')!.getBoundingClientRect();
+            const robotics = document.getElementById('robotics')!.getBoundingClientRect();
+            const dbScraper = document.getElementById('db scraper')!.getBoundingClientRect();
+            const maze = document.getElementById('maze')!.getBoundingClientRect();
+            const asteroids = document.getElementById('asteroids')?.getBoundingClientRect()!;
+            if (asteroids.bottom + asteroids.top > 2 * halfHeight) {
+                globalOffset = 500;
+
+                // handle camera
+                camera.position.setZ(15);
+
+                // set particle positions
+                let index = particleNames.get('physics')!;
+                let forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2);
+                for (let i = index + 1; i < index + 11; ++i) {
+                    const particle = spheres[i]!;
+                    particle.forcedPos = forcedPos;
+                }
+
+                index = particleNames.get('news brief')!;
+                forcedPos = pixelsToWorldCoords(halfWidth, (newsClient.bottom + newsServer.top) / 2);
+                spheres[index]!.forcedPos = forcedPos;
+                spheres[index + 1]!.forcedPos = forcedPos;
+
+                index = particleNames.get('rust connect 4')!;
+                forcedPos = pixelsToWorldCoords(halfWidth, (connectFourClient.bottom + connectFourServer.top) / 2);
+                spheres[index + 1]!.forcedPos = forcedPos;
+                spheres[index + 2]!.forcedPos = forcedPos;
+
+                index = particleNames.get('robotics codebase')!;
+                forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (2 * robotics.bottom + robotics.top) / 3);
+                spheres[index]!.forcedPos = forcedPos;
+
+                forcedPos = pixelsToWorldCoords(halfWidth * 4 / 3, Math.max((asteroids.bottom + asteroids.top) / 2, halfHeight));
+                for (let i = index + 1; i <= index + 150; ++i) {
+                    const particle = spheres[i]!;
+                    particle.forcedPos = forcedPos;
+                }
+
+                index = particleNames.get('db scraper')!;
+                forcedPos = pixelsToWorldCoords(halfWidth / 2, (dbScraper.bottom + 2 * dbScraper.top) / 3);
+                spheres[index]!.forcedPos = forcedPos;
+
+                index = particleNames.get('maze')!;
+                forcedPos = pixelsToWorldCoords(halfWidth * 8 / 5, (maze.bottom + 2 * maze.top) / 3);
+                spheres[index]!.forcedPos = forcedPos;
+            } else if (asteroids.bottom > 0) {
+                const transitionFactor = asteroids.bottom / (halfHeight + (asteroids.bottom + asteroids.top) / 2);
+                globalOffset = (pixelsToWorldCoords(halfWidth * 4 / 3, halfHeight).x - beltStartingRadius) * transitionFactor;
+                camera.position.setZ(180 - 165 * transitionFactor);
+                spheres.forEach((sphere) => {
+                    if (sphere !== null) {
+                        sphere.forcedPos = undefined;
+                    }
+                });
+            } else {
+                globalOffset = 0;
+                camera.position.setZ(180);
+                spheres.forEach((sphere) => {
+                    if (sphere !== null) {
+                        sphere.forcedPos = undefined;
+                    }
+                });
+            }
+        }
 
         function animate() {
             requestAnimationFrame(animate);
-
-            // const speed = 100;
-
-            // if (right) {
-            //     Physics.apply_x(speed);
-            // }
-            // if (left) {
-            //     Physics.apply_x(-speed);
-            // }
-            // if (up) {
-            //     Physics.apply_y(speed);
-            // }
-            // if (down) {
-            //     Physics.apply_y(-speed);
-            // }
-
             Physics.update(1.0 / 60);
 
             let buffer = new Float64Array(2);
@@ -256,6 +264,7 @@
             const physicsIndex = particleNames.get('physics')!;
             const newsIndex = particleNames.get('news brief')!;
             const connectFourIndex = particleNames.get('rust connect 4')!;
+            const roboticsIndex = particleNames.get('robotics codebase')!;
             spheres.forEach((sphere, i) => {
                 Physics.get_particle(i, buffer);
                 if (i === physicsIndex || i == newsIndex || i === connectFourIndex) {
@@ -273,6 +282,9 @@
                     ) {
                         sphere.mesh.position.x += buffer[0] - trueContainerX;
                         sphere.mesh.position.y += buffer[1] - trueContainerY;
+                    } else if (i > roboticsIndex && i <= roboticsIndex + 150) {
+                        sphere.mesh.position.x += buffer[0] - beltStartingRadius;
+                        sphere.mesh.position.y += buffer[1];
                     }
                 } else {
                     sphere.mesh.position.x = buffer[0] + globalOffset;
@@ -288,30 +300,6 @@
         document.onscroll = onScroll;
 
     });
-
-    document.onkeydown = (e) => {
-        if (e.key === 'ArrowRight') {
-            right = true;
-        } else if (e.key === 'ArrowLeft') {
-            left = true;
-        } else if (e.key === 'ArrowUp') {
-            up = true;
-        } else if (e.key === 'ArrowDown') {
-            down = true;
-        }
-    }
-
-    document.onkeyup = (e) => {
-        if (e.key === 'ArrowRight') {
-            right = false;
-        } else if (e.key === 'ArrowLeft') {
-            left = false;
-        } else if (e.key === 'ArrowUp') {
-            up = false;
-        } else if (e.key === 'ArrowDown') {
-            down = false;
-        }
-    }
 
 </script>
 

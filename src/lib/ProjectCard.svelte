@@ -12,8 +12,6 @@
     export let width: 1 | 2 | 3 = 2;
     export let id = "";
 
-    const bubbleClass = "";
-
 </script>
 
 <div
@@ -23,14 +21,13 @@
 >
     <p class="font-bold text-center">{title}</p>
     <svelte:component this={description} />
-    <div class="">
-        {#each [languages, frameworks] as category}
-            <ul class="flex space-x-2 mt-2">
-                {#each category as item}
-                    <li class="text-xs px-2 py-1 rounded bg-blue-500">{item}</li>
-                {/each}
-            </ul>
-        {/each}
-    </div>
+    <p class="mt-4 text-xs font-bold">Languages and Frameworks Used:</p>
+    {#each [languages, frameworks] as category}
+        <ul class="flex space-x-2 my-2">
+            {#each category as item}
+                <li class="text-xs px-2 py-1 rounded bg-blue-500">{item}</li>
+            {/each}
+        </ul>
+    {/each}
 </div>
 <div style={`grid-column: ${5 - xAlign};`}></div>
