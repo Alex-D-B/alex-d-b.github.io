@@ -1,11 +1,7 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import * as THREE from 'three';
     import initPhysics, * as Physics from '../../physics/pkg/physics.js';
-
-    let right = false;
-    let left = false;
-    let up = false;
-    let down = false;
 
     initPhysics().then(() => {
 
@@ -13,7 +9,7 @@
         const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
         const renderer = new THREE.WebGLRenderer({
-            canvas: document.querySelector('#bg') as Element
+            canvas: document.getElementById('canvas')!
         });
 
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -31,16 +27,19 @@
             halfHeight = window.innerHeight / 2;    
         }
 
-        camera.position.setZ(180);
-
-        const pixelsToWorldCoords = (x: number, y: number): THREE.Vector3 => {
-            const halfWidth = window.innerWidth / 2;
-            const halfHeight = window.innerHeight / 2;
+        const pixelsToWorldCoords = (x: number, y: number, debug: boolean = false): THREE.Vector3 => {
             let pos = new THREE.Vector3(
                 -1 + x / halfWidth,
                 1 - y / halfHeight
-            ).unproject(camera);
-            pos.sub(camera.position).normalize();
+            ).unproject(camera)
+            if (debug) {
+                console.log(new THREE.Vector3(
+                    -1 + x / halfWidth,
+                    1 - y / halfHeight
+                ));
+                console.log(pos);
+            }
+            pos = pos.sub(camera.position).normalize();
             let dist = -camera.position.z / pos.z;
             return new THREE.Vector3().copy(camera.position).add(pos.multiplyScalar(dist));
         }
@@ -198,13 +197,13 @@
 
                 // handle camera
                 camera.position.setZ(15);
+                camera.updateMatrixWorld();
 
                 // set particle positions
                 let index = particleNames.get('physics')!;
-                let forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2);
+                let forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2, true);
                 for (let i = index + 1; i < index + 11; ++i) {
-                    const particle = spheres[i]!;
-                    particle.forcedPos = forcedPos;
+                    spheres[i]!.forcedPos = forcedPos;
                 }
 
                 index = particleNames.get('news brief')!;
@@ -221,7 +220,7 @@
                 forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (2 * robotics.bottom + robotics.top) / 3);
                 spheres[index]!.forcedPos = forcedPos;
 
-                forcedPos = pixelsToWorldCoords(halfWidth * 4 / 3, Math.max((asteroids.bottom + asteroids.top) / 2, halfHeight));
+                forcedPos = pixelsToWorldCoords(halfWidth * 4 / 3, (asteroids.bottom + asteroids.top) / 2);
                 for (let i = index + 1; i <= index + 150; ++i) {
                     const particle = spheres[i]!;
                     particle.forcedPos = forcedPos;
@@ -303,4 +302,4 @@
 
 </script>
 
-<canvas id="bg" class="fixed left-0 top-0 -z-10"></canvas>
+<canvas id="canvas" class="fixed left-0 top-0 -z-10"></canvas>
