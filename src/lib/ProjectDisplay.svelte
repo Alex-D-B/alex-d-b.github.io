@@ -14,7 +14,7 @@
     import AsteroidsDisc from '../descriptions/Asteroids.svelte';
 </script>
 
-<div class="grid grid-cols-5 p-8 mb-[100%]">
+<div style={`margin-bottom: ${window.innerHeight}px;`} class="grid grid-cols-5 p-8">
     <!-- <ProjectGroup title="Personal Site" yOffset={-100}> -->
         <ProjectCard title="Personal Site" description={SvelteClientDisc} languages={['JavaScript', 'TypeScript']} frameworks={['Svelte']} scale={1} xAlign={0} yOffset={0} id="site" />
         <ProjectCard title="Physics Engine" description={PhysicsEngineDisc} languages={['Rust']} scale={1} xAlign={3} yOffset={0} />

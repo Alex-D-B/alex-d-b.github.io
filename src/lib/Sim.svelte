@@ -1,6 +1,7 @@
 <script lang="ts">
     import * as THREE from 'three';
     import initPhysics, * as Physics from '../../physics/pkg/physics.js';
+    import Nav from './Nav.svelte';
 
     initPhysics().then(() => {
 
@@ -330,5 +331,5 @@
     });
 
 </script>
-
+<Nav></Nav>
 <canvas id="canvas" class="fixed left-0 top-0 -z-10"></canvas>

@@ -2,10 +2,9 @@
     import svelteLogo from '../assets/svelte.svg';
 </script>
 
-<p>The very thing this is.</p>
-<img src={svelteLogo} alt="svelte logo" class="ml-auto mr-auto" />
+<img src={svelteLogo} alt="svelte logo" class="ml-auto mr-auto h-20" />
+<p>The very thing this is. I have wanted to have a personal site for a while, in the off chance it helps me in any way for job recruitment, and saw this as the perfect chance to learn Svelte as well.</p>
 <ul class="list-disc list-inside">
-    <li>Created a physics engine to power a unique background display for this website</li>
-    <li>Compiled Rust code to web assembly to enable the physics engine to remain performant</li>
+    <li>Svelte frontend</li>
     <li>Used GitHub Actions to automatically deploy the website when code is pushed to GitHub</li>
 </ul>
