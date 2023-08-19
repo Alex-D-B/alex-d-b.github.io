@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
     import * as THREE from 'three';
     import initPhysics, * as Physics from '../../physics/pkg/physics.js';
 
@@ -27,25 +26,18 @@
             halfHeight = window.innerHeight / 2;    
         }
 
-        const pixelsToWorldCoords = (x: number, y: number, debug: boolean = false): THREE.Vector3 => {
+        const pixelsToWorldCoords = (x: number, y: number): THREE.Vector3 => {
             let pos = new THREE.Vector3(
                 -1 + x / halfWidth,
                 1 - y / halfHeight
-            ).unproject(camera)
-            if (debug) {
-                console.log(new THREE.Vector3(
-                    -1 + x / halfWidth,
-                    1 - y / halfHeight
-                ));
-                console.log(pos);
-            }
-            pos = pos.sub(camera.position).normalize();
+            ).unproject(camera).sub(camera.position).normalize();
             let dist = -camera.position.z / pos.z;
             return new THREE.Vector3().copy(camera.position).add(pos.multiplyScalar(dist));
         }
 
         const spheres: ({mesh: THREE.Mesh, forcedPos?: THREE.Vector3} | null)[] = [];
-        let globalOffset: number = 0;
+        let globalXOffset: number = 0;
+        let globalZOffset: number = 0;
         const particleNames = new Map<string, number>();
 
         let index = 0;
@@ -166,21 +158,25 @@
         makeOrbitingParticle('rust connect 4', -3.5, -60, 100, 2, false, false);  // index 16
 
         // robotics codebase
-        makeOrbitingParticle('sun', -75, 0, 400, 7, false, false, 'robotics codebase');  // index 17
+        makeOrbitingParticle('sun', -75, 0, 400, 6, false, false, 'robotics codebase');  // index 17
 
         const beltStartingRadius = 90;                          // asteroids project
+        const startingIndex = index;
         for (let i = 0; i < 150; ++i) {
+            if (startingIndex + i === 34 || startingIndex + i === 47 || startingIndex + i === 88 || startingIndex + i === 151) continue;
             const radius = beltStartingRadius + ((7 * i) % 5);
             makeOrbitingParticle('sun', radius * Math.cos(0.5 * i), radius * Math.sin(0.5 * i), 1, 0.5, false, false);
             // Physics.receive_gravtiy_from(18 + i, 17);
         }                                                       // index 167
+        const numAsteroids = index - startingIndex;
 
         makeOrbitingParticle('sun', 120 * Math.cos(1.75), 120 * Math.sin(1.75), 20, 3, false, false, "db scraper"); // index 168
         makeEllipticOrbitingParticle('sun', 0, 130, 20, 2, 115, false, false, 'maze');
 
         // comet
         makeEllipticOrbitingParticle('sun', 200, 50, 11, 1.5, 110, false, false, 'comet');
-        Physics.set_radius(particleNames.get('comet')!, 0);
+
+        Physics.save_snapshot();
 
         const onScroll = () => {
             const site = document.getElementById('site')?.getBoundingClientRect()!;
@@ -193,7 +189,8 @@
             const maze = document.getElementById('maze')!.getBoundingClientRect();
             const asteroids = document.getElementById('asteroids')?.getBoundingClientRect()!;
             if (asteroids.bottom + asteroids.top > 2 * halfHeight) {
-                globalOffset = 500;
+                globalXOffset = 0;
+                globalZOffset = 500;
 
                 // handle camera
                 camera.position.setZ(15);
@@ -201,7 +198,7 @@
 
                 // set particle positions
                 let index = particleNames.get('physics')!;
-                let forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2, true);
+                let forcedPos = pixelsToWorldCoords(halfWidth * 3 / 2, (site.bottom + site.top) / 2);
                 for (let i = index + 1; i < index + 11; ++i) {
                     spheres[i]!.forcedPos = forcedPos;
                 }
@@ -221,21 +218,22 @@
                 spheres[index]!.forcedPos = forcedPos;
 
                 forcedPos = pixelsToWorldCoords(halfWidth * 4 / 3, (asteroids.bottom + asteroids.top) / 2);
-                for (let i = index + 1; i <= index + 150; ++i) {
+                for (let i = index + 1; i <= index + numAsteroids; ++i) {
                     const particle = spheres[i]!;
                     particle.forcedPos = forcedPos;
                 }
 
                 index = particleNames.get('db scraper')!;
-                forcedPos = pixelsToWorldCoords(halfWidth / 2, (dbScraper.bottom + 2 * dbScraper.top) / 3);
+                forcedPos = pixelsToWorldCoords(halfWidth / 2, (2 * dbScraper.bottom + dbScraper.top) / 3);
                 spheres[index]!.forcedPos = forcedPos;
 
                 index = particleNames.get('maze')!;
                 forcedPos = pixelsToWorldCoords(halfWidth * 8 / 5, (maze.bottom + 2 * maze.top) / 3);
                 spheres[index]!.forcedPos = forcedPos;
             } else if (asteroids.bottom > 0) {
-                const transitionFactor = asteroids.bottom / (halfHeight + (asteroids.bottom + asteroids.top) / 2);
-                globalOffset = (pixelsToWorldCoords(halfWidth * 4 / 3, halfHeight).x - beltStartingRadius) * transitionFactor;
+                const transitionFactor = asteroids.bottom / (halfHeight + (asteroids.bottom - asteroids.top) / 2);
+                globalXOffset = (pixelsToWorldCoords(halfWidth * 4 / 3, halfHeight).x - beltStartingRadius) * transitionFactor;
+                globalZOffset = -1250 * transitionFactor;
                 camera.position.setZ(180 - 165 * transitionFactor);
                 spheres.forEach((sphere) => {
                     if (sphere !== null) {
@@ -243,7 +241,8 @@
                     }
                 });
             } else {
-                globalOffset = 0;
+                globalXOffset = 0;
+                globalZOffset = 0;
                 camera.position.setZ(180);
                 spheres.forEach((sphere) => {
                     if (sphere !== null) {
@@ -253,9 +252,38 @@
             }
         }
 
-        function animate() {
+        let frame = 0;
+        let oldTimeStep = 0;
+        function animate(timeStep: any) {
             requestAnimationFrame(animate);
-            Physics.update(1.0 / 60);
+
+            let endCycleZOffset = 0;
+            const endCycleFrameDuration = 240;
+
+            const deltaTime = timeStep - oldTimeStep;
+            oldTimeStep = timeStep;
+            const dt = 1 / 60; // deltaTime !== 0 ? Math.min(deltaTime / 1000, 2.0 / 60) : 1.0 / 60;
+
+            if (frame === 9000) {
+                const index = particleNames.get('robotics codebase')!;
+                for (let i = index + 1; i <= index + numAsteroids; ++i) {
+                    Physics.receive_gravtiy_from(i, index);
+                }
+            } else if (frame > 11000) {
+                if (frame < 11000 + endCycleFrameDuration) {
+                    endCycleZOffset = -1250 * (frame - 11000) / endCycleFrameDuration;
+                } else if (frame > 11000 + endCycleFrameDuration) {
+                    endCycleZOffset = -1250 * (11000 + 2 * endCycleFrameDuration - frame) / endCycleFrameDuration;
+                    if (frame == 11000 + 2 * endCycleFrameDuration) {
+                        frame -= 11000;
+                    }
+                } else {
+                    endCycleZOffset = -1250;
+                    Physics.restore_from_snapshot();
+                }
+            }
+            ++frame;
+            Physics.update(dt);
 
             let buffer = new Float64Array(2);
             let trueContainerX = 0;
@@ -274,6 +302,7 @@
                 if (sphere.forcedPos) {
                     sphere.mesh.position.x = sphere.forcedPos.x;
                     sphere.mesh.position.y = sphere.forcedPos.y;
+                    sphere.mesh.position.z = 0;
                     if (
                         (i >= physicsIndex + 1 && i < physicsIndex + 11)
                         || i === newsIndex + 1
@@ -281,13 +310,14 @@
                     ) {
                         sphere.mesh.position.x += buffer[0] - trueContainerX;
                         sphere.mesh.position.y += buffer[1] - trueContainerY;
-                    } else if (i > roboticsIndex && i <= roboticsIndex + 150) {
+                    } else if (i > roboticsIndex && i <= roboticsIndex + numAsteroids) {
                         sphere.mesh.position.x += buffer[0] - beltStartingRadius;
                         sphere.mesh.position.y += buffer[1];
                     }
                 } else {
-                    sphere.mesh.position.x = buffer[0] + globalOffset;
+                    sphere.mesh.position.x = buffer[0] + globalXOffset;
                     sphere.mesh.position.y = buffer[1];
+                    sphere.mesh.position.z = (i > roboticsIndex && i <= roboticsIndex + numAsteroids ? 0 : globalZOffset) + (i !== 0 ? endCycleZOffset : 0);
                 }
             });
 
@@ -295,7 +325,7 @@
         }
 
         onScroll();
-        animate();
+        animate(0);
         document.onscroll = onScroll;
 
     });

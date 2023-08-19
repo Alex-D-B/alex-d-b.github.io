@@ -7,7 +7,7 @@ use crate::alert;
 
 // const MAX_SPEED: f64 = 20.0;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Particle {
     pub pos: Vector2,
     pub vel: Vector2,
@@ -48,6 +48,7 @@ pub enum InteractionType {
 pub use InteractionType::{RelativePosition, Gravity, RelativePositionAndGravity};
 
 static mut LIST: Vec<Particle> = Vec::new();
+static mut LIST_SNAPSHOT: Vec<Particle> = Vec::new();
 
 pub struct ParticleList;
 
@@ -146,6 +147,13 @@ pub fn make_relative_to(target: usize, source: usize) {
 }
 
 #[wasm_bindgen]
+pub fn set_mass(target: usize, mass: f64) {
+    unsafe {
+        LIST[target].mass = mass
+    }
+}
+
+#[wasm_bindgen]
 pub fn set_radius(target: usize, radius: f64) {
     unsafe {
         LIST[target].radius = radius
@@ -177,4 +185,14 @@ pub fn get_particle(index: usize, buffer: &mut [f64]) {
     unsafe { if let Some(particle) = LIST.get(index) {
         (buffer[0], buffer[1]) = particle.pos.into();
     } }
+}
+
+#[wasm_bindgen]
+pub fn save_snapshot() {
+    unsafe { LIST_SNAPSHOT = LIST.clone(); }
+}
+
+#[wasm_bindgen]
+pub fn restore_from_snapshot() {
+    unsafe { LIST = LIST_SNAPSHOT.clone(); }
 }

@@ -17,11 +17,11 @@
 <div
     {id}
     style={`transform: scale(${scale}); margin-top: ${yOffset}px; grid-column: ${xAlign + 1} / ${xAlign + width + 1};`}
-    class="bg-gray-400 rounded p-4 text-left relative min-h-[600px]"
+    class="bg-gray-400 rounded p-4 text-left relative"
 >
     <p class="font-bold text-center">{title}</p>
     <svelte:component this={description} />
-    <p class="mt-4 text-xs font-bold">Languages and Frameworks Used:</p>
+    <p class="mt-4 text-sm font-bold">Languages and Frameworks Used:</p>
     {#each [languages, frameworks] as category}
         <ul class="flex space-x-2 my-2">
             {#each category as item}
@@ -29,5 +29,6 @@
             {/each}
         </ul>
     {/each}
+    <p class="text-right text-gray-700 text-sm font-semibold">May 2023 - July 2023</p>
 </div>
 <div style={`grid-column: ${5 - xAlign};`}></div>
