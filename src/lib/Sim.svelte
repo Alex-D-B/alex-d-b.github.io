@@ -166,7 +166,6 @@
             if (startingIndex + i === 34 || startingIndex + i === 47 || startingIndex + i === 88 || startingIndex + i === 151) continue;
             const radius = beltStartingRadius + ((7 * i) % 5);
             makeOrbitingParticle('sun', radius * Math.cos(0.5 * i), radius * Math.sin(0.5 * i), 1, 0.5, false, false);
-            // Physics.receive_gravtiy_from(18 + i, 17);
         }                                                       // index 167
         const numAsteroids = index - startingIndex;
 
