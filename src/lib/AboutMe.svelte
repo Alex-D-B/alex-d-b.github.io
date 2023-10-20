@@ -1,5 +1,12 @@
+<script lang="ts">
+    import photo from '../assets/self.jpg';
+</script>
+
 <div class="text-black bg-slate-100 py-8 grid grid-flow-row">
-    <p class="text-left mt-[25%]">&emsp;&emsp;Hey there, I'm Alex Broihier, currently a Math, Stats, and Computer Science student at UIUC. This site is currently still being worked on. In its current state, it is essentially a glorified resume, but I will be adding more to it so the site becomes much more than that.</p>
+    <div class="text-left mt-[15%]">
+      <img src={photo} alt="Portrait" style="width: 25%;" class="rounded-md ml-auto mr-auto mb-4" />
+      <p>&emsp;&emsp;Hey there, I'm Alex Broihier, currently a Math, Stats, and Computer Science student at UIUC. This site is currently still being worked on. In its current state, it is essentially a glorified resume, but I will be adding more to it so the site becomes much more than that.</p>
+    </div>
     <!-- <a href="/">Resume</a> -->
 
     <!-- WORK EXPERIENCE -->

@@ -10,6 +10,5 @@
 </script>
 
 <div class="fixed left-0 top-0 z-10 min-w-full bg-slate-200">
-    <p>Nav Here</p>
     <progress class="min-w-full max-h-2 bg-red-500" value={length} max={1} />
 </div>
