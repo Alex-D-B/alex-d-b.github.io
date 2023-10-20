@@ -2,8 +2,10 @@
     let length = 0;
     export const onscroll = () => {
         const body = document.body.getBoundingClientRect();
-        length = window.scrollY / (body.bottom - body.top - window.innerHeight);
-        console.log(length);
+        const newLength = window.scrollY / (body.bottom - body.top - window.innerHeight);
+        if (!isNaN(newLength)) {
+            length = newLength;
+        }
     }
     onscroll();
     document.addEventListener('scroll', onscroll);
