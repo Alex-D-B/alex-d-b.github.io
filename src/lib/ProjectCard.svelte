@@ -11,6 +11,7 @@
     export let yOffset: number;
     export let width: 1 | 2 | 3 = 2;
     export let id = "";
+    export let date = "";
 
 </script>
 
@@ -29,6 +30,6 @@
             {/each}
         </ul>
     {/each}
-    <p class="text-right text-gray-700 text-sm font-semibold">May 2023 - July 2023</p>
+    <p class="text-right text-gray-700 text-sm font-semibold">{date}</p>
 </div>
 <div style={`grid-column: ${5 - xAlign};`}></div>
