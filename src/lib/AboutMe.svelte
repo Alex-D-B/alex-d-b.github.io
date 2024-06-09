@@ -53,7 +53,7 @@
     <ul class="list-disc list-inside text-left">
       <li>Studying software design patterns used in industry with IBM leaders</li>
       <li>Collaborating in groups to progress through weekly coding challenges</li>
-      <li>Network with other peers in the top 5\% of those who applied to the program</li>
+      <li>Network with other peers in the top 5% of those who applied to the program</li>
     </ul>
     <div class="flex justify-between">
       <p class="font-bold">Compilers Research</p>
