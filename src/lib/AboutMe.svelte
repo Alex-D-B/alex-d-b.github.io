@@ -10,28 +10,27 @@
     <!-- <a href="/">Resume</a> -->
 
     <!-- WORK EXPERIENCE -->
-    <p class="font-bold mt-8">Experience:</p>
     <div class="flex justify-between">
       <p class="font-bold">Box: Software Engineering Intern</p>
-      <p>May 2024 -- Present</p>
+      <p>May 2024 &#8212; Present</p>
     </div>
     <ul class="list-disc list-inside text-left">
-      <li>Implementing distributed event processing using <b>Apache Helix</b> and <b>Zookeeper</b></li>
-      <li>Engineering a system in <b>Java</b> and <b>Redis</b> to concurrently process thousands of events</li>
-      <li>Creating a framework on top of <b>Spring Boot</b> to enable other teams to configure event processing with custom logic</li>
+      <li>Implementing distributed event processing using <b>Apache Helix</b> and <b>Zookeeper</b> to split work over 10+ processes</li>
+      <li>Engineering a configurable framework in <b>Java</b> and <b>Redis</b> to concurrently process 100,000+ events per second</li>
+      <li>Providing an internal events API and service with <b>OpenAPI</b> and <b>Spring Boot</b> deployed with <b>Kubernetes</b></li>
     </ul>
     <div class="flex justify-between">
       <p class="font-bold">Undergraduate Course Assistant</p>
-      <p>January 2023 -- Present</p>
+      <p>January 2023 &#8212; Present</p>
     </div>
     <ul class="list-disc list-inside text-left">
       <li>Currently working on the <i>Data Structures</i> course, previously worked on the <i>Algorithms</i> and <i>Into to CS II Honors</i> courses</li>
-      <li>Create and maintain online graded <b>C++</b> problems in <b>Docker</b> containerized application to help assess course knowledge</li>
+      <li>Create and maintain online <b>C++</b> problems in <b>Docker</b> application to assess course knowledge of 800+ students</li>
       <li>Run lab sections and office hours to help students learn course concepts and use <b>GDB</b> and <b>Valgrind</b> to debug</li>
     </ul>
     <div class="flex justify-between">
       <p class="font-bold">iD Tech Instructor</p>
-      <p>June 2023 -- August 2023</p>
+      <p>June 2023 &#8212; August 2023</p>
     </div>
     <ul class="list-disc list-inside text-left">
       <li>Taught robotics engineering and <b>C++</b> programming through a course partnership with BattleBots</li>
@@ -41,32 +40,25 @@
     <!-- EXTRACURRICULAR ACTIVITIES -->
     <p class="font-bold mt-8">Extracurricular Activities:</p>
     <div class="flex justify-between">
-      <p class="font-bold">ACM (Association for Computing Machinery) @ UIUC</p>
-    </div>
-    <ul class="list-disc list-inside text-left">
-      <li>SIGma (theory, officer)</li>
-    </ul>
-    <div class="flex justify-between">
       <p class="font-bold">IBM Accelerate: Software Development Track</p>
-      <p>June 2024 -- Present</p>
+      <p>June 2024 &#8212; Present</p>
     </div>
     <ul class="list-disc list-inside text-left">
-      <li>Studying software design patterns used in industry with IBM leaders</li>
-      <li>Collaborating in groups to progress through weekly coding challenges</li>
-      <li>Network with other peers in the top 5% of those who applied to the program</li>
+      <li>Studying software design topic such as full stack development and application security with IBM leaders</li>
+      <li>Collaborating in groups of 10+ participants to progress through weekly coding projects</li>
     </ul>
     <div class="flex justify-between">
       <p class="font-bold">Compilers Research</p>
-      <p>January 2024 -- Present</p>
+      <p>January 2024 &#8212; Present</p>
     </div>
     <ul class="list-disc list-inside text-left">
       <li>Apply compiler methodologies to data science to increase performance</li>
-      <li>Construct novel benchmarks for dataframes to be used for further compiler testing</li>
+      <li>Construct novel benchmarks for dataframes, uncovering over 600x performance differences between libraries</li>
       <li>Future Work: leverage LLMs to dynamically generate pattern matching rules</li>
     </ul>
     <div class="flex justify-between">
       <p class="font-bold">PeopleWeave Research Project</p>
-      <p>April 2023 -- January 2024</p>
+      <p>April 2023 &#8212; January 2024</p>
     </div>
     <ul class="list-disc list-inside text-left">
       <li>Automate collection of authorship data in <b>Python</b> with <b>Parsel</b> to power models developed by other teams</li>
@@ -74,7 +66,7 @@
     </ul>
     <div class="flex justify-between">
       <p class="font-bold">VEX Robotics Competition Lead Designer, Builder, and Programmer</p>
-      <p>August 2018 -- May 2022</p>
+      <p>August 2018 &#8212; May 2022</p>
     </div>
     <ul class="list-disc list-inside text-left">
       <li>Leveraged <b>CAD</b> in <b>Autodesk Inventor</b> to speed up the design process, getting robots in the field 3+ weeks faster</li>
