@@ -27,18 +27,23 @@
     <p class="text-sm text-left">There is a good chance I will end up finishing my Bachelors in 2025 and doing a Masters for 2026</p>
     <p class="font-bold mt-8 text-left">Relevant Coursework:</p>
     <div class="flex flex-wrap justify-evenly">
-      {#each ['Data Structures', 'Computer Architecture', 'Software Design Lab', 'Data Science Discovery', 'Abstract Linear Algebra'] as course}
+      {#each ['Data Structures', 'Algorithms', 'Computer Architecture', 'Database Systems', 'System Programming'] as course}
         <p class="text-left px-2">{course}</p>
       {/each}
     </div>
     <div class="flex flex-wrap justify-evenly">
-      {#each ['Algorithms', 'Database Systems', 'Numerical Methods', 'Statistics and Probability II', 'Statistical Modeling I'] as course}
+      {#each ['Compilers', 'Numerical Methods', 'Software Design Lab', 'Data Science Discovery', 'Abstract Algebra'] as course}
+        <p class="text-left px-2">{course}</p>
+      {/each}
+    </div>
+    <div class="flex flex-wrap justify-evenly">
+      {#each ['Abstract Linear Algebra', 'Differential Equations', 'Statistics and Probability II', 'Statistical Modeling II'] as course}
         <p class="text-left px-2">{course}</p>
       {/each}
     </div>
     <p class="font-bold mt-8 text-left">Current Coursework:</p>
     <div class="flex flex-wrap justify-evenly">
-      {#each ['System Programming', 'Programming Languages and Compilers', 'Statistical Modeling II', 'Abstract Algebra', 'Differential Equations'] as course}
+      {#each ['Distributed Systems', 'Compiler Construction', 'Nonlinear Programming', 'Real Analysis', 'Complex Variables'] as course}
         <p class="text-left px-2">{course}</p>
       {/each}
     </div>
