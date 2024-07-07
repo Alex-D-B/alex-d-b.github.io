@@ -2,6 +2,7 @@
     import svelteLogo from '../assets/svelte.svg';
 </script>
 
+<p class="font-bold text-center">Personal Website</p>
 <img src={svelteLogo} alt="svelte logo" class="ml-auto mr-auto h-20" />
 <p>The very thing this is. I have wanted to have a personal site for a while, in the off chance it helps me in any way for job recruitment, and saw this as the perfect chance to learn Svelte as well.</p>
 <ul class="list-disc list-inside">

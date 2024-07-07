@@ -1,3 +1,4 @@
+<p class="font-bold text-center">News Aggregator Server</p>
 <ul class="list-disc list-inside">
     <li>Implemented a data scraper in <b>Python</b> with <b>Parsel</b> to automatically gather and store current news information</li>
     <li>Leveraged <b>OpenAI API</b> to AI generate a daily welcome message based on gathered data of current events</li>

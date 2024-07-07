@@ -1,3 +1,4 @@
+<p class="font-bold text-center">Multiplayer Connect Four Server</p>
 <ul class="list-disc list-inside">
     <li>Implemented a front-end web app with <b>Yew</b> framework, providing a variety of game modes and AI opponents</li>
     <li>Leveraged an asynchronous back-end runtime using <b>Tokio</b> to concurrently manage numerous multiplayer lobbies</li>

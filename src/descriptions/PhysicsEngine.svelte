@@ -1,3 +1,4 @@
+<p class="font-bold text-center">Mini Physics Engine</p>
 <p>The thing running on this website.</p>
 <ul class="list-disc list-inside">
     <li>Created a physics engine to power a unique background display for a personal website</li>
