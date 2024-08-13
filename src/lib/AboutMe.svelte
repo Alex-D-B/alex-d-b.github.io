@@ -4,7 +4,7 @@
     import resumeExtended from '../assets/resume-extended.pdf';
 </script>
 
-<div class="text-black bg-slate-100 py-8 grid grid-flow-row">
+<div class="text-black bg-slate-100 py-8 grid grid-flow-row" id="about me">
     <div class="text-left mt-[15%]">
       <img src={photo} alt="Portrait" style="width: 25%;" class="rounded-md ml-auto mr-auto mb-4" />
       <p>&emsp;&emsp;Hey there, I'm Alex Broihier, currently a Math, Stats, and Computer Science major at UIUC. I am especially interested in compilers, systems programming, and CS theory. Currently I am a software engineering intern at Box. Along with this, I am a course assistant (undergraduate TA) for the <i>Data Structures</i> course at UIUC, have previously been on the course staff for the <i>Algorithms</i> and <i>Intro to CS II Honors</i> courses, and am involved in compilers research. Outside of all of this, I like to run, tinker with Linux, solve all sorts of puzzles, and learn something new every day.</p>

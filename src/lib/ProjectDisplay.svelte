@@ -26,7 +26,7 @@
     <ProjectCard description={ResumeParserDisc} scale={1} xAlign={3} yOffset={-50} />
     <ProjectCard description={SpearDisc} scale={1} xAlign={2} yOffset={100} />
     <ProjectCard description={SmallCompilerDisc} scale={1} xAlign={1} yOffset={100} />
-    <ProjectCard description={BusTripsDisc} scale={1} xAlign={3} yOffset={100} id="bustrips" />
+    <ProjectCard description={BusTripsDisc} scale={1} xAlign={3} yOffset={100} id="bus trips" />
     <!-- <ProjectGroup title="Personal Site" yOffset={-100}> -->
         <ProjectCard description={SvelteClientDisc} scale={1} xAlign={0} yOffset={0} id="site" />
         <ProjectCard description={PhysicsEngineDisc} scale={1} xAlign={3} yOffset={0} />

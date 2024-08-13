@@ -38,6 +38,7 @@
 
         const spheres: ({mesh: THREE.Mesh, forcedPos?: THREE.Vector3} | null)[] = [];
         let globalXOffset: number = 0;
+        let globalYOffset: number = 0;
         let globalZOffset: number = 0;
         const particleNames = new Map<string, number>();
 
@@ -179,6 +180,8 @@
         Physics.save_snapshot();
 
         const onScroll = () => {
+            const aboutMe = document.getElementById('about me')!.getBoundingClientRect();
+            const busTrips = document.getElementById('bus trips')!.getBoundingClientRect();
             const site = document.getElementById('site')?.getBoundingClientRect()!;
             const newsClient = document.getElementById('news client')!.getBoundingClientRect();
             const newsServer = document.getElementById('news server')!.getBoundingClientRect();
@@ -188,7 +191,21 @@
             const dbScraper = document.getElementById('db scraper')!.getBoundingClientRect();
             const maze = document.getElementById('maze')!.getBoundingClientRect();
             const asteroids = document.getElementById('asteroids')?.getBoundingClientRect()!;
-            if (asteroids.bottom + asteroids.top > 2 * halfHeight) {
+            globalYOffset = 0;
+            if (busTrips.top >= 2 * halfHeight) {
+                const simRadius = 140;
+                const screenRadius = pixelsToWorldCoords(0, 0).y;
+                globalXOffset = 0;
+                globalZOffset = 0;
+                camera.position.setZ(180);
+                spheres.forEach((sphere) => {
+                    if (sphere !== null) {
+                        sphere.forcedPos = undefined;
+                    }
+                });
+                const rate = 2 * (screenRadius + simRadius) / (busTrips.top - aboutMe.bottom - halfHeight);
+                globalYOffset = screenRadius + simRadius - rate * (busTrips.top - 2 * halfHeight);
+            } else if (asteroids.bottom + asteroids.top > 2 * halfHeight) {
                 globalXOffset = 0;
                 globalZOffset = 500;
 
@@ -316,7 +333,7 @@
                     }
                 } else {
                     sphere.mesh.position.x = buffer[0] + globalXOffset;
-                    sphere.mesh.position.y = buffer[1];
+                    sphere.mesh.position.y = buffer[1] + globalYOffset;
                     sphere.mesh.position.z = (i > roboticsIndex && i <= roboticsIndex + numAsteroids ? 0 : globalZOffset) + (i !== 0 ? endCycleZOffset : 0);
                 }
             });
