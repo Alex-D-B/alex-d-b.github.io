@@ -64,7 +64,7 @@
     </div>
     <div class="flex justify-between">
       <p><b>Box</b> &#8212; <i>Software Engineering Intern</i></p>
-      <p>May 2024 &#8212; August 2025</p>
+      <p>May 2024 &#8212; August 2024</p>
     </div>
     <ul class="list-disc list-inside text-left">
       <li>Implementing distributed event processing using <b>Apache Helix</b> and <b>Zookeeper</b> to split work over 10+ processes</li>
