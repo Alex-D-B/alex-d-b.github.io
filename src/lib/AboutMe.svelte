@@ -7,8 +7,8 @@
 <div class="text-black bg-slate-100 py-8 grid grid-flow-row" id="about me">
     <div class="text-left mt-[15%]">
       <img src={photo} alt="Portrait" style="width: 25%;" class="rounded-md ml-auto mr-auto mb-4" />
-      <p>&emsp;&emsp;Hey there, I'm Alex Broihier, currently a Math, Stats, and Computer Science major at UIUC. I am especially interested in compilers, systems programming, and CS theory. Over the past summer I was a software engineering intern at Box. Currently, I am a course assistant (undergraduate TA) for the <i>Data Structures</i> course at UIUC, have previously been on the course staff for the <i>Algorithms</i> and <i>Intro to CS II Honors</i> courses, and am involved in compilers research. Outside of all of this, I like to run, tinker with Linux, solve all sorts of puzzles, and learn something new every day.</p>
-      <p>&emsp;&emsp;This site is meant to highlight some of my work and was originally planned to be much bigger in scale (each project would be its own planet in a solar system). I did not end up getting that far, especially because I keep on making new projects, but remenants of the original vision remain (especially as you get further down the page).</p>
+      <p>&emsp;&emsp;Hey there, I'm Alex Broihier, currently a Math, Stats, and Computer Science major at UIUC. I am especially interested in compilers, systems programming, and CS theory. I will be a software engineering intern at Citadel Securities and then Google this summer and fall; over the past summer I interned at Box. Currently, I am a lead course assistant (undergraduate TA) for the <i>Data Structures</i> course at UIUC, have previously been on the course staff for the <i>Algorithms</i> and <i>Intro to CS II Honors</i> courses, and am involved in compilers research. Outside of all of this, I like to run, tinker with Linux, solve all sorts of puzzles, and learn something new every day.</p>
+      <p>&emsp;&emsp;This site is meant to highlight some of my work and was originally planned to be much bigger in scale (each project would be its own planet in a solar system). I did not end up getting that far, especially because I keep on making new projects, but remnants of the original vision remain (especially as you get further down the page).</p>
     </div>
     <div class="flex justify-between my-4">
       <a href={resume} class="bg-blue-400 p-2 rounded-md">Resume (main resume, one page)</a>
@@ -24,26 +24,30 @@
     </div>
     <p class="italic text-left">Bachelor of Science in Mathematics</p>
     <p class="italic text-left">James Scholar</p>
-    <p class="text-sm text-left">There is a good chance I will end up finishing my Bachelors in 2025 and doing a Masters for 2026</p>
     <p class="font-bold mt-8 text-left">Relevant Coursework:</p>
     <div class="flex flex-wrap justify-evenly">
-      {#each ['Data Structures', 'Algorithms', 'Computer Architecture', 'Database Systems', 'System Programming'] as course}
+      {#each ['Data Structures', 'Algorithms', 'Computer Architecture', 'Database Systems'] as course}
         <p class="text-left px-2">{course}</p>
       {/each}
     </div>
     <div class="flex flex-wrap justify-evenly">
-      {#each ['Compilers', 'Numerical Methods', 'Software Design Lab', 'Data Science Discovery', 'Abstract Algebra'] as course}
+      {#each ['System Programming', 'Operating Systems', 'Distributed Systems', 'Computer Networking'] as course}
         <p class="text-left px-2">{course}</p>
       {/each}
     </div>
     <div class="flex flex-wrap justify-evenly">
-      {#each ['Abstract Linear Algebra', 'Differential Equations', 'Statistics and Probability II', 'Statistical Modeling II'] as course}
+      {#each ['Programming Languages and Compilers', 'Advanced Compiler Construction', 'Numerical Methods', 'Software Design Lab'] as course}
         <p class="text-left px-2">{course}</p>
       {/each}
     </div>
-    <p class="font-bold mt-8 text-left">Current Coursework:</p>
+    <p class="font-bold mt-8 text-left">Other (Math and Stats) Coursework:</p>
     <div class="flex flex-wrap justify-evenly">
-      {#each ['Distributed Systems', 'Compiler Construction', 'Nonlinear Programming', 'Real Analysis', 'Complex Variables'] as course}
+      {#each ['Abstract Algebra', 'Abstract Linear Algebra', 'Real Analysis', 'Complex Variables', 'Nonlinear Programming'] as course}
+        <p class="text-left px-2">{course}</p>
+      {/each}
+    </div>
+    <div class="flex flex-wrap justify-evenly">
+      {#each ['Differential Equations', 'Data Science Discovery', 'Statistics and Probability II', 'Statistical Modeling II', 'Stochastic Processes'] as course}
         <p class="text-left px-2">{course}</p>
       {/each}
     </div>
@@ -51,8 +55,16 @@
     <!-- WORK EXPERIENCE -->
     <p class="font-bold text-lg mt-8">Work Experience:</p>
     <div class="flex justify-between">
+      <p><b>Google</b> &#8212; <i>Incoming Software Engineering Intern</i></p>
+      <p>August 2025 &#8212; November 2025</p>
+    </div>
+    <div class="flex justify-between">
+      <p><b>Citadel Securities</b> &#8212; <i>Incoming Software Engineering Intern</i></p>
+      <p>June 2025 &#8212; August 2025</p>
+    </div>
+    <div class="flex justify-between">
       <p><b>Box</b> &#8212; <i>Software Engineering Intern</i></p>
-      <p>May 2024 &#8212; Present</p>
+      <p>May 2024 &#8212; August 2025</p>
     </div>
     <ul class="list-disc list-inside text-left">
       <li>Implementing distributed event processing using <b>Apache Helix</b> and <b>Zookeeper</b> to split work over 10+ processes</li>
@@ -82,7 +94,7 @@
     <p class="font-bold text-lg mt-8">Extracurricular Activities:</p>
     <div class="flex justify-between">
       <p><b>IBM</b> &#8212; <i>Accelerate Program: Software Development Track</i></p>
-      <p>June 2024 &#8212; Present</p>
+      <p>June 2024 &#8212; July 2024</p>
     </div>
     <ul class="list-disc list-inside text-left">
       <li>Studying software design topic such as full stack development and application security with IBM leaders</li>
